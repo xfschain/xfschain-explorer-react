@@ -134,21 +134,28 @@ class Home extends React.Component {
         }
     }
     
-    async componentDidMount() {
-        try{
-            let status = await api.getStatus();
-            let latest = await api.getLatest();
-            const { blocks, txs } = latest;
-            let txCountByDay = await api.getTxCountByDay();
-        let parseTxCountByDay = () =>{
-            let times = txCountByDay.map(({time})=>{
+    componentDidMount() {
+        api.getStatus().then((data)=>{
+            this.setState({
+                status: data
+            });
+        });
+        api.getLatest().then((data)=>{
+            const { blocks, txs } = data;
+            this.setState({
+                latestBlocks: blocks,
+                latestTxs: txs,
+            });
+        });
+        
+        api.getTxCountByDay().then((data)=>{
+            let times = data.map(({time})=>{
                 return moment(time).format('MM-DD');
             });
-            let counts = txCountByDay.map(({count})=>{
+            let counts = data.map(({count})=>{
                 return count;
-            })
+            });
             this.setState({
-                status: status, latestBlocks: blocks, latestTxs: txs,
                 txCountByDayChartOptions:{
                     ...this.state.txCountByDayChartOptions,
                     xaxis: {
@@ -163,11 +170,7 @@ class Home extends React.Component {
                     }
                 ]
             });
-        }
-        parseTxCountByDay();
-     } catch(e){
-
-        }
+        });
     }
     render() {
         const difficultyCardText = (num)=>{
