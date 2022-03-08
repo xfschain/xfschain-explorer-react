@@ -367,6 +367,11 @@ class App extends React.Component {
                   {intl.get('NAV_NFTS')}
                 </a>
               </li>
+              <li className="nav-item">
+                <a href="/apis" className="nav-link px-2 text-muted">
+                  {intl.get('NAV_APIS')}
+                </a>
+              </li>
             </ul>
           </footer>
         </div>
