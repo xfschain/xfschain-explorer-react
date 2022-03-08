@@ -11,7 +11,6 @@ FROM nginx:1.21.5-alpine
 
 COPY nginx-default-server.conf /etc/nginx/conf.d/default.conf
 
-VOLUME /usr/share/nginx/html
 WORKDIR /usr/share/nginx/html
 COPY --from=builder /var/cache/nodejs/build .
 
