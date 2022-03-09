@@ -157,3 +157,18 @@ export function getTxCountByDay(options){
         });
     });
 }
+
+export function jsonrpc(data, options){
+    return new Promise((resolve, reject)=>{
+        apiCli.request({
+            url: `/jsonrpc/v2`,
+            method: 'POST',
+            data: data,
+            ...(options||{})
+        }).then(res=>{
+            resolve(res.data);
+        }).catch(err=>{
+            reject(err.data);
+        });
+    });
+}

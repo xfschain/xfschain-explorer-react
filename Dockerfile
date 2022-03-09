@@ -4,7 +4,9 @@ COPY package.json .
 RUN ["npm", "install"]
 COPY . .
 ARG REACT_APP_API_BASE_URL=
+ARG REACT_APP_WEBSOCKET_BASE_URL=
 RUN echo ${REACT_APP_API_BASE_URL}
+RUN echo ${REACT_APP_WEBSOCKET_BASE_URL}
 RUN ["npm", "run", "build"]
 
 FROM nginx:1.21.5-alpine

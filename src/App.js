@@ -27,6 +27,7 @@ import classNames from 'classnames';
 import ErrorPage from './404';
 import BlankPage from './BlankPage';
 import services from './services';
+import TxPending from './TxPending';
 const api = services.api;
 function NavItem({ href, children, ...props }) {
   let location = useLocation();
@@ -79,49 +80,12 @@ function getUrlParams(key) {
 }
 function SearchBar({children,value}) {
   const history = useHistory();
-  const location = useLocation();
-  console.log('bar',history, location);
+  // const location = useLocation();
+  // console.log('bar',history, location);
   let handleSearchSubmit = async (e)=>{
     e.preventDefault();
     // console.log('search', this.state.searchq);
-    try {
-      let searchr = await api.requestSearch({
-        params: {
-          q: value,
-        }
-      });
-
-      const { type, pathValue } = searchr;
-      if (type === 1){
-        // history.push(`/blocks/${value}`);
-        history.replace(`/loading`, {
-          to: `/blocks/${value}`
-        });
-        // window.location.reload();
-        return;
-      }else if(type === 2){
-        // history.push(`/txs/${value}`);
-        history.replace(`/loading`, {
-          to: `/txs/${value}`
-        });
-        return;
-      }else if(type === 3){
-        // history.push(`/accounts/${value}`);
-        history.replace(`/loading`, {
-          to: `/accounts/${value}`
-        });
-        return;
-      }else if(type === 4){
-        // history.push(`/blocks/${pathValue}`);
-        history.replace(`/loading`, {
-          to: `/blocks/${pathValue}`
-        });
-        return;
-      }
-      alert('Not found data');
-    } catch (e) {
-      alert('aaa');
-    }
+    history.push(`/search?q=${value}`);
   }
 
   return (
@@ -135,6 +99,51 @@ function SearchBar({children,value}) {
         
       </div>
     </form>
+  );
+}
+
+function SearchCompoent({history}){
+  let searchq = getUrlParams('q');
+  if (!searchq || searchq.length === 0){
+    history.replace('/404');
+    return;
+  }
+  api.requestSearch({
+    params: {
+      q: searchq,
+    }
+  }).then((resp)=>{
+    let { type, pathValue } = resp;
+    if (type === 1){
+      history.replace(`/blocks/${searchq}`);
+      return;
+    }else if(type === 2){
+      history.replace(`/txs/${searchq}`);
+      return;
+    }else if(type === 3){
+      history.replace(`/accounts/${searchq}`);
+
+      return;
+    }else if(type === 4){
+      history.replace(`/blocks/${pathValue}`);
+      // history.push(`/blocks/${pathValue}`);
+      // history.replace(`/loading`, {
+      //   to: `/blocks/${pathValue}`
+      // });
+      return;
+    }else if(type === 5){
+      history.replace(`/pending/${searchq}`);
+      // history.replace(`/loading`, {
+      //   to: `/pending/${searchq}`
+      // });
+      return;
+    }
+    history.replace('/404');
+  }).catch((e)=>{
+    history.replace('/404');
+  });
+  return (
+    <div></div>
   );
 }
 class App extends React.Component {
@@ -205,7 +214,7 @@ class App extends React.Component {
               <span className="navbar-toggler-icon" />
             </button>
             <h1 className="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
-              <a href=".">
+              <a href="/">
                 <img src={logo} width={110} height={32} alt="XFS" className="navbar-brand-image" />
               </a>
             </h1>
@@ -327,6 +336,8 @@ class App extends React.Component {
             <Route exact path="/blocks/:hash" component={BlockDetail} />
             <Route exact path="/txs/:hash" component={TxDetail} />
             <Route exact path="/accounts/:address" component={AccountDetail} />
+            <Route exact path="/pending/:hash" component={TxPending} />
+            <Route exact path="/search" component={SearchCompoent} />
             {/* <Route exact path="/tokens/:address" component={TokenDetail}/> */}
             {/* <Route exact path="/nfts/:address" component={TokenDetail}/> */}
             <Route exact path="/404" component={ErrorPage} />
