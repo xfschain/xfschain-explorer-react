@@ -103,6 +103,7 @@
     "TX_DETAIL_GAS_USED": "Gas Used",
     "TX_DETAIL_NONCE": "Nonce",
     "TX_DETAIL_TRANSACTION_DATA": "Transaction Data",
+    "TX_DETAIL_STATUS_PENDING": "PENDING",
     "ACCOUNTS_ADDRESS": "Address",
     "ACCOUNTS_BALANCE": "Balance",
     "ACCOUNTS_TYPE": "Type",
