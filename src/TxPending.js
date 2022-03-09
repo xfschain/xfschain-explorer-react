@@ -50,7 +50,7 @@ class TxPending extends React.Component {
                     return;
                 }
                 console.log('receive', dataobj);
-                history.replace(`/tx/${params.hash}`);
+                history.replace(`/txs/${params.hash}`);
             });
         });
         // console.log(`data`, data);
