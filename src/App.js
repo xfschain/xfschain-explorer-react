@@ -163,7 +163,8 @@ class App extends React.Component {
   loadLocales() {
     let currentLocaleObj = this.getCurrentLocale();
     let currentLocale = currentLocaleObj.value;
-    axios.get(`/locales/${currentLocale}.json`).then((res) => {
+    let now = new Date().getTime();
+    axios.get(`/locales/${currentLocale}.json?t=${now}`).then((res) => {
       // console.log('local-res', res);
       return intl.init({
         currentLocale,

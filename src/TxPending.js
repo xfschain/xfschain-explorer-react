@@ -24,13 +24,19 @@ class TxPending extends React.Component {
             dataFormat: 'HEX'
         }
     }
-    async componentDidMount() {
+    componentDidMount() {
         const { history, match } = this.props;
         const { params } = match;
         let websocketurl = baseWebsocketurl + '/listen';
         const socket = new WebSocket(websocketurl);
         socket.addEventListener('open', function (event) {
             console.log('Success listen', websocketurl);
+        });
+        socket.addEventListener('close', function (event) {
+            console.log('Socket listen closed');
+        });
+        socket.addEventListener('error', function (event) {
+            console.log('WebSocket error: ', event);
         });
         socket.addEventListener('message', async function (event) {
             if (event.data.size===0){
@@ -50,27 +56,26 @@ class TxPending extends React.Component {
                     return;
                 }
                 console.log('receive', dataobj);
-                history.replace(`/txs/${params.hash}`);
+                setTimeout(()=>{
+                    history.replace(`/txs/${params.hash}`);
+                }, 2000);
             });
         });
-        // console.log(`data`, data);
-        try {
-            const data = await api.jsonrpc({
-                "method": "TxPool.GetTranByHash",
-                "params":{
-                    "hash": params.hash,
-                },
-                "id": 1,
-                "jsonrpc": "2.0"
-            });
+        api.jsonrpc({
+            "method": "TxPool.GetTranByHash",
+            "params":{
+                "hash": params.hash,
+            },
+            "id": 1,
+            "jsonrpc": "2.0"
+        }).then(data=>{
             if (!data || !data.result){
                 throw Error('not found');
             }
             this.setState({data: data.result});
-        } catch (e) {
+        }).catch((e)=>{
             history.replace('/404');
-            return;
-        }
+        });
     }
     render() {
         const valuestr = atto2base(this.state.data.value.toString());
