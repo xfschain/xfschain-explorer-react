@@ -5,7 +5,7 @@ pipeline {
         IMAGE_NAME = 'xfschain/xfschain-explorer-react'
         CI = 'false'
         REACT_APP_API_BASE_URL = 'https://api.scan.xfs.tech'
-        REACT_APP_WEBSOCKET_BASE_URL = 'wss://api.scan.xfs.tech'
+        REACT_APP_WEBSOCKET_BASE_URL = 'ws://api.scan.xfs.tech'
      }
     stages {
         stage('BuildAndRelease') {
