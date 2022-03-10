@@ -5,12 +5,14 @@ import services from './services';
 import { atto2base, atto2nano } from './util/xfslibutil';
 
 import { dataFormat, defaultIntNumberFormat, defaultrNumberFormatFF6, hexToUint8Array, } from './util/common';
+import classNames from 'classnames';
 const api = services.api;
 const baseWebsocketurl = process.env.REACT_APP_WEBSOCKET_BASE_URL;
 class TxPending extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            status: 0,
             data: {
                 data: null,
                 gas_limit: 0,
@@ -21,29 +23,52 @@ class TxPending extends React.Component {
                 value: 0,
                 version: 0
             },
-            dataFormat: 'HEX'
+            dataFormat: 'HEX',
+            pingLoopId: 0
         }
     }
+    pingLoop(conn){
+        if(!conn){
+            return;
+        }
+        let loopId = setInterval(()=>{
+            if (!conn.readyState || conn.readyState !== 1){
+                return;
+            }
+            let data = Uint8Array.from([1]);
+            conn.send(data);
+        }, 1000);
+        this.setState({pingLoopId: loopId});
+    }
+    componentWillUnmount(){
+        clearInterval(this.state.pingLoopId);
+    }
+    
     componentDidMount() {
         const { history, match } = this.props;
         const { params } = match;
         let websocketurl = baseWebsocketurl + '/listen';
         const socket = new WebSocket(websocketurl);
-        socket.addEventListener('open', function (event) {
+        socket.onopen = (e) =>{
             console.log('Success listen', websocketurl);
-        });
-        socket.addEventListener('close', function (event) {
+        };
+        socket.onclose = (e)=>{
             console.log('Socket listen closed');
-        });
-        socket.addEventListener('error', function (event) {
-            console.log('WebSocket error: ', event);
-        });
-        socket.addEventListener('message', async function (event) {
-            if (event.data.size===0){
+        }
+        socket.onerror = (e)=>{
+            console.log('WebSocket error:', e);
+        };
+        socket.onmessage = (e)=>{
+            if (e.data.size===0){
                 return;
             }
-            event.data.arrayBuffer().then((data)=>{
+            e.data.arrayBuffer().then((data)=>{
                 let datauint8 = new Uint8Array(data);
+                let dtype = datauint8[0];
+                if (dtype === 2){
+                    console.log('pong');
+                    return;
+                }
                 let utf8decoder = new TextDecoder();
                 let datastring = utf8decoder.decode(datauint8);
                 let dataobj = JSON.parse(datastring);
@@ -55,12 +80,10 @@ class TxPending extends React.Component {
                 if (txhash !== params.hash){
                     return;
                 }
-                console.log('receive', dataobj);
-                setTimeout(()=>{
-                    history.replace(`/txs/${params.hash}`);
-                }, 2000);
+                this.setState({status: 1});
             });
-        });
+        }
+        this.pingLoop(socket);
         api.jsonrpc({
             "method": "TxPool.GetTranByHash",
             "params":{
@@ -87,6 +110,48 @@ class TxPending extends React.Component {
                 format: this.state.dataFormat
             }) || 'Cannot Preview!';
         }
+        let StatusView = (props)=>{
+            if (this.state.status === 1){
+                return (
+                    <div className="col-md-10">
+                    <div className="d-flex">
+                        <span style={{
+                            marginRight: '1rem'
+                        }}>
+                            <i style={{verticalAlign: 'middle'}} className="ti ti-check"></i>
+                        </span>
+                        <span style={{
+                            marginTop: '.15rem'
+                        }}>
+                            {intl.get('TX_DETAIL_STATUS_SUCCESS')}
+                        </span>
+                    </div>
+                </div>
+                );
+            }
+            return (
+                <div className="col-md-10">
+                    <div className="d-flex">
+                        <span style={{
+                            marginRight: '1rem'
+                        }}>
+                            <div className="spinner-border text-muted" style={{color:'#2fb344 !important'}}></div>
+                        </span>
+                        <span style={{
+                            marginTop: '.15rem'
+                        }}>
+                            {intl.get('TX_DETAIL_STATUS_PENDING')}
+                        </span>
+                    </div>
+                </div>
+            );
+        }
+        let progressStyles = {
+            width: this.state.status === 0?0:'100%'
+        };
+        let progressClasses = classNames({
+            [`progress-bar-indeterminate`]: this.state.status === 0,
+        }, 'progress-bar bg-lime');
         return (
             <div>
                 <h1 className="mb-4">
@@ -95,7 +160,7 @@ class TxPending extends React.Component {
                 
                 <div className="card mb-4">
                     <div className="progress progress-sm">
-                        <div className="progress-bar bg-lime progress-bar-indeterminate"></div>
+                        <div style={progressStyles} className={progressClasses}></div>
                     </div>
                     <ul className="list-group list-group-flush">
                         <li className="list-group-item py-3">
@@ -115,20 +180,7 @@ class TxPending extends React.Component {
                                 }}>
                                     {intl.get('TX_DETAIL_STATUS')}:
                                 </div>
-                                <div className="col-md-10">
-                                    <div className="d-flex">
-                                        <span style={{
-                                            marginRight: '1rem'
-                                        }}>
-                                            <div className="spinner-border text-muted" style={{color:'#2fb344 !important'}}></div>
-                                        </span>
-                                        <span style={{
-                                            marginTop: '.15rem'
-                                        }}>
-                                            {intl.get('TX_DETAIL_STATUS_PENDING')}
-                                        </span>
-                                    </div>
-                                </div>
+                                {<StatusView />}
                             </div>
                         </li>
                         <li className="list-group-item py-3">
