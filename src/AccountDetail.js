@@ -115,7 +115,7 @@ class AccountDetail extends React.Component {
         // let time = parseInt(this.state.data.header.timestamp);
         // const timestr = timeformat(new Date(time * 1000));
         const balanceVal = atto2base(this.state.account.balance);
-        let typeFormat = ({ type }) => {
+        let typeFormat = (type) => {
             let text = intl.get('ACCOUNT_DETAIL_TYPE_EXTERNAL');
             if (type === 1){
                 text = intl.get('ACCOUNT_DETAIL_TYPE_CONTRACT');

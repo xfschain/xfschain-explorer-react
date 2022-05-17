@@ -67,6 +67,11 @@ class TXDetail extends React.Component {
                     return intl.get('TX_DETAIL_STATUS_FAILED');
             }
         }
+
+        const addrPrefixStyle = {
+            fontSize: '.6rem',
+            marginRight: this.state.data.type === 1 ? '.2rem':'0',
+        };
         return (
             <div>
                 <h1 className="mb-4">
@@ -136,11 +141,9 @@ class TXDetail extends React.Component {
                                     {intl.get('TX_DETAIL_FROM')}:
                                 </div>
                                 <div className="col-md-10">
-                                    <div className="d-flex">
-                                        <a href={`/accounts/${this.state.data.from}`}>
-                                            {this.state.data.from}
-                                        </a>
-                                    </div>
+                                    <a href={`/accounts/${this.state.data.from}`}>
+                                        {this.state.data.from}
+                                    </a>
                                 </div>
                             </div>
                         </li>
@@ -150,11 +153,12 @@ class TXDetail extends React.Component {
                                     {intl.get('TX_DETAIL_TO')}:
                                 </div>
                                 <div className="col-md-10">
-                                    <div className="d-flex">
-                                        <a href={`/accounts/${this.state.data.to}`}>
-                                            {this.state.data.to}
-                                        </a>
-                                    </div>
+                                    <span style={addrPrefixStyle}>
+                                        {`${this.state.data.type === 1 ? '[CREATE]': ''}`}
+                                    </span>
+                                    <a href={`/accounts/${this.state.data.to}`}>
+                                        {this.state.data.to}
+                                    </a>
                                 </div>
                             </div>
                         </li>

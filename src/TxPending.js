@@ -152,6 +152,10 @@ class TxPending extends React.Component {
         let progressClasses = classNames({
             [`progress-bar-indeterminate`]: this.state.status === 0,
         }, 'progress-bar bg-lime');
+        const addrPrefixStyle = {
+            fontSize: '.6rem',
+            marginRight: this.state.data.type === 1 ? '.2rem':'0',
+        };
         return (
             <div>
                 <h1 className="mb-4">
@@ -214,6 +218,9 @@ class TxPending extends React.Component {
                                 </div>
                                 <div className="col-md-10">
                                     <div className="d-flex">
+                                        <span style={addrPrefixStyle}>
+                                            {`${this.state.data.type === 1 ? '[CREATE]': ''}`}
+                                        </span>
                                         <a href={`/accounts/${this.state.data.to}`}>
                                             {this.state.data.to}
                                         </a>
