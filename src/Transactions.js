@@ -97,7 +97,7 @@ class Transactions extends React.Component {
             });
         } catch (e) {
             console.log(e);
-            history.replace('/404');
+            // history.replace('/404');
         }
     }
     render() {

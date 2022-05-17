@@ -5,6 +5,7 @@ import { timeformat } from './util';
 import services from './services';
 import { atto2base } from './util/xfslibutil';
 import { defaultIntNumberFormat, defaultrNumberFormatFF4,defaultrNumberFormatFF6 } from './util/common';
+import qs from 'qs';
 const api = services.api;
 class BlockDetail extends React.Component {
     constructor(props) {
@@ -14,6 +15,10 @@ class BlockDetail extends React.Component {
                 fontSize: '1rem',
                 paddingTop: '1rem',
                 paddingBottom: '1rem'
+            },
+            page: {
+                pageSize: 20,
+                total: 0
             },
             data: {
                 header: {
@@ -61,7 +66,7 @@ class BlockDetail extends React.Component {
         }
     }
     async componentDidMount() {
-        const { history, match } = this.props;
+        const { history, match, location } = this.props;
         const { params } = match;
         try {
             const data = await api.getBlockByHash(params.hash);
@@ -69,6 +74,37 @@ class BlockDetail extends React.Component {
         } catch (e) {
             history.replace('/404');
             return;
+        }
+        const { search } = location;
+        const sq = qs.parse(search.replace(/^\?/, ''));
+        let pageNum = sq['p'];
+        pageNum = parseInt(pageNum || 1);
+        try {
+            let pagedata = await api.getTransactionsByAddress(params.address,{
+                params: {
+                    p: pageNum,
+                }
+            });
+            let { total, records } = pagedata;
+            let pageSize = this.state.page.pageSize;
+            let pn = parseInt(total / pageSize);
+            let mod = total % pageSize;
+            if (mod > 0) {
+                pn += 1;
+            }
+            if (pageNum > pn) {
+                throw new Error('pagenum overflow');
+            }
+            console.log(records);
+            this.setState({
+                page: {
+                    total: total,
+                    pageSize: pageSize
+                },
+                transactions: records
+            });
+        } catch (e) {
+            console.log(e);
         }
     }
     render() {

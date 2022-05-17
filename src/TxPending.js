@@ -1,6 +1,5 @@
 import React from 'react';
 import intl from 'react-intl-universal';
-import { timeformat } from './util';
 import services from './services';
 import { atto2base, atto2nano } from './util/xfslibutil';
 
