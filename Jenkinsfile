@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('BuildAndRelease') {
             when {
-                branch 'main'
+                branch 'develop'
             }
             steps {
                 script {
