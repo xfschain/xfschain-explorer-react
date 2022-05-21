@@ -26,7 +26,7 @@ pipeline {
                         }
                 }
             }
-            pose {
+            post {
                 success {
                     updateGitlabCommitStatus name: 'BuildAndRelease', state: 'success'
                 }
