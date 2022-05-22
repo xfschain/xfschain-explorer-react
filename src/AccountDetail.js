@@ -232,7 +232,7 @@ class AccountDetail extends React.Component {
                             </div>
                             <div className="col-md-10">
                                 <div className="d-flex">
-                                    {this.state.account.stateRoot}
+                                    {this.state.account.stateRoot??'None'}
                                 </div>
                             </div>
                         </div>
