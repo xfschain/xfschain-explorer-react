@@ -97,7 +97,7 @@ function hexToUint8Array(text){
     return null;
   }
   text = text.replace(/^0x/, '');
-  if (text.length % 2 !== 0) {
+  if (text.length === 0 || text.length % 2 !== 0) {
     return null;
   }
   const arr = text.match(/.{1,2}/g)

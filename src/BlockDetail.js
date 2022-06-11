@@ -326,8 +326,15 @@ class BlockDetail extends React.Component {
                                 field: 'to', name: intl.get('BLOCK_DETAIL_TRANSACTIONS_TO'),
                                 tdStyle: { maxWidth: '180px' },
                                 render: (item) => {
+                                    const prefixStyle = {
+                                        fontSize: '.6rem',
+                                        marginRight: item.type === 1 ? '.2rem':'0',
+                                    };
                                     return (
                                         <div className="text-truncate">
+                                            <span style={prefixStyle}>
+                                                {`${item.type === 1 ? '[CREATE]': ''}`}
+                                            </span>
                                             <a href={`/accounts/${item.to}`}>
                                                 {item.to}
                                             </a>

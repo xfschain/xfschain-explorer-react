@@ -175,7 +175,7 @@ class Home extends React.Component {
     }
     render() {
         const difficultyCardText = (num)=>{
-            const du = hashesUnitCover(num);
+            const du = hashesUnitCover(num||0);
             return (
                 <p className="card-text" style={{
                     fontSize: '26px',
@@ -190,7 +190,7 @@ class Home extends React.Component {
         }
 
         const powerCardText = (num)=>{
-            const du = hashesUnitCover(num);
+            const du = hashesUnitCover(num||0);
             return (
                 <p className="card-text" style={{
                     fontSize: '26px',
@@ -476,14 +476,21 @@ class Home extends React.Component {
                                         render: (item) => {
                                             let fromAddr = splitAndEllipsisAddress(item.from);
                                             let toAddress = splitAndEllipsisAddress(item.to);
+                                            const prefixStyle = {
+                                                fontSize: '.6rem',
+                                                marginRight: item.type === 1 ? '.2rem':'0',
+                                            };
                                             return (
                                                 <span>
                                                     <a href={`/accounts/${item.from}`}>
                                                             {fromAddr}
-                                                        </a>&nbsp;&raquo;&nbsp;
-                                                        <a href={`/accounts/${item.to}`}>
-                                                            {toAddress}
-                                                        </a>
+                                                    </a>&nbsp;&raquo;&nbsp;
+                                                    <span style={prefixStyle}>
+                                                        {`${item.type === 1 ? '[CREATE]': ''}`}
+                                                    </span>
+                                                    <a href={`/accounts/${item.to}`}>
+                                                        {toAddress}
+                                                    </a>
                                                 </span>
                                             );
                                         }

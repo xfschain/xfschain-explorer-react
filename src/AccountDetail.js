@@ -115,7 +115,7 @@ class AccountDetail extends React.Component {
         // let time = parseInt(this.state.data.header.timestamp);
         // const timestr = timeformat(new Date(time * 1000));
         const balanceVal = atto2base(this.state.account.balance);
-        let typeFormat = ({ type }) => {
+        let typeFormat = (type) => {
             let text = intl.get('ACCOUNT_DETAIL_TYPE_EXTERNAL');
             if (type === 1){
                 text = intl.get('ACCOUNT_DETAIL_TYPE_CONTRACT');
@@ -232,7 +232,7 @@ class AccountDetail extends React.Component {
                             </div>
                             <div className="col-md-10">
                                 <div className="d-flex">
-                                    {this.state.account.stateRoot}
+                                    {this.state.account.stateRoot??'None'}
                                 </div>
                             </div>
                         </div>
@@ -261,7 +261,7 @@ class AccountDetail extends React.Component {
                                 className="form-control"
                                 rows="3"
                                 readOnly
-                                value={''}></textarea>
+                                value={this.state.account.code??''}></textarea>
                         </div>
                         </div>
                 </div>
@@ -298,8 +298,15 @@ class AccountDetail extends React.Component {
                                 field: 'to', name: intl.get('ACCOUNT_DETAIL_TRANSACTIONS_TO'),
                                 tdStyle: { maxWidth: '160px' },
                                 render: (item) => {
+                                    const addrPrefixStyle = {
+                                        fontSize: '.6rem',
+                                        marginRight: item.type === 1 ? '.2rem':'0',
+                                    };
                                     return (
                                         <div className="text-truncate">
+                                            <span style={addrPrefixStyle}>
+                                                {`${item.type === 1 ? '[CREATE]': ''}`}
+                                            </span>
                                             <a href={`/accounts/${item.to}`}>
                                                 {item.to}
                                             </a>
