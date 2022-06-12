@@ -89,8 +89,7 @@ class Blocks extends React.Component {
                 pageSize: pageSize}, 
                 data: records});
         }catch(e) {
-            console.log(e);
-            history.replace('/404');
+            console.warn(e);
         }
     }
     render() {

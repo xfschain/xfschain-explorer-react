@@ -19,6 +19,21 @@ function atto2base(val,pad) {
     return value;
 }
 
+function bigToBase(val, decimals, pad){
+    let valbn = new BN(val, 10);
+    let base = new BN(10).pow(new BN(decimals));
+    let fraction = valbn.mod(base).toString(10);;
+    while (fraction.length < decimals) {
+        fraction = `0${fraction}`;
+    }
+    if (!pad){
+        fraction = fraction.match(/^([0-9]*[1-9]|0)(0*)/)[1];
+    }
+    let whole = valbn.div(base).toString(10);
+    let value = `${whole}${fraction === '0' ? '' : `.${fraction}`}`;
+    return value;
+}
+
 function base2atto(val) {
     let comps = val.split('.');
     if (comps.length > 2){
@@ -80,5 +95,6 @@ export {
     base2atto,
     atto2nano,
     nano2atto,
+    bigToBase,
 }
 

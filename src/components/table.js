@@ -5,6 +5,7 @@ import React from 'react';
 import empty from './empty.svg';
 
 function mergeTableData(columns = [], data = []) {
+    console.log('data', data);
     return data.map((item, index) => {
         return (
             <tr key={String(index)}>

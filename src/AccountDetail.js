@@ -9,6 +9,7 @@ import { atto2base } from './util/xfslibutil';
 import { defaultIntNumberFormat, defaultNumberFormatFF9, defaultrNumberFormatFF4, defaultrNumberFormatFF6 } from './util/common';
 import classNames from 'classnames';
 import qs from 'qs';
+
 function PaginationWapper(props) {
     let location = useLocation();
     const { total, pageSize, address } = props;
@@ -71,13 +72,16 @@ class AccountDetail extends React.Component {
     async componentDidMount() {
         const { history, location, match } = this.props;
         const { params } = match;
-        
         try {
             const data = await api.getAccountByAddress(params.address);
             this.setState({account: data});
         }catch(e){
             history.replace('/404');
             return;
+        }
+        try {
+        }catch(e) {
+
         }
         const { search } = location;
         const sq = qs.parse(search.replace(/^\?/, ''));
@@ -99,7 +103,6 @@ class AccountDetail extends React.Component {
             if (pageNum > pn) {
                 throw new Error('pagenum overflow');
             }
-            console.log(records);
             this.setState({
                 page: {
                     total: total,
@@ -108,21 +111,54 @@ class AccountDetail extends React.Component {
                 transactions: records
             });
         } catch (e) {
-            console.log(e);
+            console.warn(e);
         }
     }
     render() {
         // let time = parseInt(this.state.data.header.timestamp);
         // const timestr = timeformat(new Date(time * 1000));
         const balanceVal = atto2base(this.state.account.balance);
-        let typeFormat = (type) => {
-            let text = intl.get('ACCOUNT_DETAIL_TYPE_EXTERNAL');
-            if (type === 1){
-                text = intl.get('ACCOUNT_DETAIL_TYPE_CONTRACT');
+        let typeFormat = (item) => {
+            if (item?.type === 1){
+                let contractType = item?.contractType;
+                let contractTypeName = '';
+                let contractUrl = '';
+                let contractName = '';
+                if (contractType === 1){
+                    contractTypeName = 'STD-TOKEN';
+                    contractName = '';
+                    contractUrl = `/std_tokens/${item?.address}`;
+                }else if (contractType === 2){
+                    contractTypeName = 'NFTs';
+                    contractUrl = `/nfts/${item?.address}`;
+                }
+                const style = {
+                    margin: '10px 10px', 
+                };
+                const contractTypeView = ()=>{
+                    if (contractTypeName === ''){
+                        return;
+                    }else {
+                        return (
+                            <>
+                                <span style={style}>&rarr;</span>
+                                <a href={contractUrl}>
+                                    [{contractTypeName}: {item?.address}]
+                                </a>
+                            </>
+                        );
+                    }
+                };
+                return (
+                    <div>
+                        {intl.get('ACCOUNT_DETAIL_TYPE_CONTRACT')}
+                        {contractTypeView()}
+                    </div>
+                )
             }
             return (
                 <div>
-                    {text}
+                    {intl.get('ACCOUNT_DETAIL_TYPE_EXTERNAL')}
                 </div>
             )
         }
@@ -189,7 +225,7 @@ class AccountDetail extends React.Component {
                                 {intl.get('ACCOUNT_DETAIL_TYPE')}:
                             </div>
                             <div className="col-md-10">
-                                {typeFormat(this.state.account.type)}
+                                {typeFormat(this.state.account)}
                             </div>
                         </div>
                     </li>
@@ -295,9 +331,29 @@ class AccountDetail extends React.Component {
                                 }
                             },
                             {
+                                field: 'from', name: intl.get('ACCOUNT_DETAIL_TRANSACTIONS_FROM'),
+                                tdStyle: { maxWidth: '160px' },
+                                render: (item) => {
+                                    return (
+                                        <div className="text-truncate">
+                                            <a href={`/accounts/${item.from}`}>
+                                                {item.from}
+                                            </a>
+                                        </div>
+                                    );
+                                }
+                            },
+                            {
                                 field: 'to', name: intl.get('ACCOUNT_DETAIL_TRANSACTIONS_TO'),
                                 tdStyle: { maxWidth: '160px' },
                                 render: (item) => {
+                                    let toAddress = '';
+                                    if (item.type === 0){
+                                        toAddress = item.to;
+                                    }else if (item.type === 1){
+                                        const contractAddress = item.contractAddress;
+                                        toAddress = contractAddress;
+                                    }
                                     const addrPrefixStyle = {
                                         fontSize: '.6rem',
                                         marginRight: item.type === 1 ? '.2rem':'0',
@@ -307,8 +363,8 @@ class AccountDetail extends React.Component {
                                             <span style={addrPrefixStyle}>
                                                 {`${item.type === 1 ? '[CREATE]': ''}`}
                                             </span>
-                                            <a href={`/accounts/${item.to}`}>
-                                                {item.to}
+                                            <a href={`/accounts/${toAddress}`}>
+                                                {toAddress}
                                             </a>
                                         </div>
                                     );

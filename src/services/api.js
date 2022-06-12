@@ -102,6 +102,33 @@ export function getAccountsByPage(options){
     });
 }
 
+export function getSTDTokensByPage(options){
+    return new Promise((resolve, reject)=>{
+        apiCli.request({
+            url: '/std_tokens',
+            method: 'GET',
+            ...(options||{})
+        }).then(res=>{
+            resolve(res.data);
+        }).catch(err=>{
+            reject(err.data);
+        });
+    });
+}
+
+export function getNFTokensByPage(options){
+    return new Promise((resolve, reject)=>{
+        apiCli.request({
+            url: '/nf_tokens',
+            method: 'GET',
+            ...(options||{})
+        }).then(res=>{
+            resolve(res.data);
+        }).catch(err=>{
+            reject(err.data);
+        });
+    });
+}
 export function getAccountByAddress(address,options){
     return new Promise((resolve, reject)=>{
         apiCli.request({
@@ -116,6 +143,46 @@ export function getAccountByAddress(address,options){
     });
 }
 
+export function getSTDTokenByAddress(address,options){
+    return new Promise((resolve, reject)=>{
+        apiCli.request({
+            url: `/std_tokens/${address}`,
+            method: 'GET',
+            ...(options||{})
+        }).then(res=>{
+            resolve(res.data);
+        }).catch(err=>{
+            reject(err.data);
+        });
+    });
+}
+
+export function getNFTokenByAddress(address,options){
+    return new Promise((resolve, reject)=>{
+        apiCli.request({
+            url: `/nf_tokens/${address}`,
+            method: 'GET',
+            ...(options||{})
+        }).then(res=>{
+            resolve(res.data);
+        }).catch(err=>{
+            reject(err.data);
+        });
+    });
+}
+export function getTransactionsByBlockHash(blockHash, options){
+    return new Promise((resolve, reject)=>{
+        apiCli.request({
+            url: `/blocks/${blockHash}/txs`,
+            method: 'GET',
+            ...(options||{})
+        }).then(res=>{
+            resolve(res.data);
+        }).catch(err=>{
+            reject(err.data);
+        });
+    });
+}
 export function getTransactionsByAddress(address, options){
     return new Promise((resolve, reject)=>{
         apiCli.request({
@@ -130,6 +197,72 @@ export function getTransactionsByAddress(address, options){
     });
 }
 
+export function getTxsByAddressFromSTDToken(address, options){
+    return new Promise((resolve, reject)=>{
+        apiCli.request({
+            url: `/std_tokens/${address}/txs`,
+            method: 'GET',
+            ...(options||{})
+        }).then(res=>{
+            resolve(res.data);
+        }).catch(err=>{
+            reject(err.data);
+        });
+    });
+}
+export function getTxsByAddressFromNFToken(address, options){
+    return new Promise((resolve, reject)=>{
+        apiCli.request({
+            url: `/nf_tokens/${address}/txs`,
+            method: 'GET',
+            ...(options||{})
+        }).then(res=>{
+            resolve(res.data);
+        }).catch(err=>{
+            reject(err.data);
+        });
+    });
+}
+export function getHoldersByAddressFromSTDToken(address, options){
+    return new Promise((resolve, reject)=>{
+        apiCli.request({
+            url: `/std_tokens/${address}/holders`,
+            method: 'GET',
+            ...(options||{})
+        }).then(res=>{
+            resolve(res.data);
+        }).catch(err=>{
+            reject(err.data);
+        });
+    });
+}
+export function getHoldersByAddressFromNFToken(address, options){
+    return new Promise((resolve, reject)=>{
+        apiCli.request({
+            url: `/nf_tokens/${address}/holders`,
+            method: 'GET',
+            ...(options||{})
+        }).then(res=>{
+            resolve(res.data);
+        }).catch(err=>{
+            reject(err.data);
+        });
+    });
+}
+
+export function getItemsByAddressFromNFToken(address, options){
+    return new Promise((resolve, reject)=>{
+        apiCli.request({
+            url: `/nf_tokens/${address}/items`,
+            method: 'GET',
+            ...(options||{})
+        }).then(res=>{
+            resolve(res.data);
+        }).catch(err=>{
+            reject(err.data);
+        });
+    });
+}
 export function requestSearch(options){
     return new Promise((resolve, reject)=>{
         apiCli.request({

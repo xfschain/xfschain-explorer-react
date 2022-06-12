@@ -28,6 +28,10 @@ import ErrorPage from './404';
 import BlankPage from './BlankPage';
 import services from './services';
 import TxPending from './TxPending';
+import STDTokens from './STDTokens';
+import STDTokenItem from './STDTokenItem';
+import NFTokens from './NFTokens';
+import NFTokenItem from './NFTokenItem';
 const api = services.api;
 function NavItem({ href, children, ...props }) {
   let location = useLocation();
@@ -303,7 +307,7 @@ class App extends React.Component {
                   <NavItem href={'/accounts'}>
                     {intl.get('NAV_ACCOUNTS')}
                   </NavItem>
-                  <NavItem href={'/tokens'}>
+                  <NavItem href={'/std_tokens'}>
                     {intl.get('NAV_TOKENS')}
                   </NavItem>
                   <NavItem href={'/nfts'}>
@@ -331,9 +335,12 @@ class App extends React.Component {
             <Route exact path="/" component={Home} />
             <Route exact path="/blocks" component={Blocks} />
             <Route exact path="/accounts" component={Accounts} />
+            <Route exact path="/std_tokens" component={STDTokens} />
+            <Route exact path="/std_tokens/:address" component={STDTokenItem} />
             <Route exact path="/txs" component={Transactions} />
             <Route exact path="/tokens" component={Tokens} />
-            <Route exact path="/nfts" component={NFTsPage} />
+            <Route exact path="/nfts" component={NFTokens} />
+            <Route exact path="/nfts/:address" component={NFTokenItem} />
             <Route exact path="/blocks/:hash" component={BlockDetail} />
             <Route exact path="/txs/:hash" component={TxDetail} />
             <Route exact path="/accounts/:address" component={AccountDetail} />

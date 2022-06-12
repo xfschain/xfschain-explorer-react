@@ -67,7 +67,7 @@ class Transactions extends React.Component {
         }
     }
     async componentDidMount() {
-        const { history, location } = this.props;
+        const { location } = this.props;
         const { search } = location;
         const sq = qs.parse(search.replace(/^\?/, ''));
         let pageNum = sq['p'];
@@ -96,7 +96,7 @@ class Transactions extends React.Component {
                 data: records
             });
         } catch (e) {
-            console.log(e);
+            console.warn(e);
             // history.replace('/404');
         }
     }
@@ -165,13 +165,20 @@ class Transactions extends React.Component {
                                         fontSize: '.6rem',
                                         marginRight: item.type === 1 ? '.2rem':'0',
                                     };
+                                    let toAddress = '';
+                                    if (item.type === 0){
+                                        toAddress = item.to;
+                                    }else if (item.type === 1){
+                                        const contractAddress = item.contractAddress;
+                                        toAddress = contractAddress;
+                                    }
                                     return (
                                         <div className="text-truncate">
                                             <span style={prefixStyle}>
                                                 {`${item.type === 1 ? '[CREATE]': ''}`}
                                             </span>
-                                            <a href={`/accounts/${item.to}`}>
-                                                {item.to}
+                                            <a href={`/accounts/${toAddress}`}>
+                                                {toAddress}
                                             </a>
                                         </div>
                                     );

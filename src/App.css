@@ -64,3 +64,23 @@
     flex-grow: 0.3!important;
   }
 }
+
+.home-data-nav{                                                                                                                                     display: flex;                                                                                                                                  padding: 0;                                                                                                                                     margin: 0;                                                                                                                                      list-style: none;                                                                                                                               border-bottom: 0.0625rem solid rgba(231,234,243,.7);                                                                                        }                                                                                                                                               .home-data-nav .nav-item {                                                                                                                          white-space: nowrap;
+    display: block;
+}                                                                                                                                               
+.home-data-nav .nav-item .nav-link {                                                                                                                
+	padding: 1rem 20px;                                                                                                                             
+	display: block;                                                                                                                                 
+	cursor: pointer;
+}
+.home-data-nav .nav-item .active {
+    border-top-color: transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-bottom: 0.1875rem solid transparent;
+    margin-bottom: -0.125rem;
+    color: rgba(32,107,196,1);
+    background-color: transparent;
+    border-color: rgba(32,107,196,1);
+    font-weight: 600;
+}

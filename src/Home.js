@@ -475,7 +475,14 @@ class Home extends React.Component {
                                         name: intl.get('HOME_LATEST_TRANSACTIONS_ADDRESS'),
                                         render: (item) => {
                                             let fromAddr = splitAndEllipsisAddress(item.from);
-                                            let toAddress = splitAndEllipsisAddress(item.to);
+                                            let toAddress = '';
+                                            if (item.type === 0){
+                                                toAddress = item.to;
+                                            }else if (item.type === 1){
+                                                const contractAddress = item.contractAddress;
+                                                toAddress = contractAddress;
+                                            }
+                                            const addressDispay = splitAndEllipsisAddress(toAddress); 
                                             const prefixStyle = {
                                                 fontSize: '.6rem',
                                                 marginRight: item.type === 1 ? '.2rem':'0',
@@ -488,8 +495,8 @@ class Home extends React.Component {
                                                     <span style={prefixStyle}>
                                                         {`${item.type === 1 ? '[CREATE]': ''}`}
                                                     </span>
-                                                    <a href={`/accounts/${item.to}`}>
-                                                        {toAddress}
+                                                    <a href={`/accounts/${toAddress}`}>
+                                                        {addressDispay}
                                                     </a>
                                                 </span>
                                             );

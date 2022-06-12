@@ -17,6 +17,15 @@ function defaultTxsValueFormat(num) {
   return formater.format(num);
 }
 
+function numberFormatPercent(num){
+  let formater = new Intl.NumberFormat('en-US',
+  {style: 'decimal', 
+  minimumIntegerDigits: 1,
+  minimumFractionDigits: 4,
+  maximumFractionDigits: 4,
+});
+    return formater.format(num);
+}
 function defaultIntNumberFormat(num) {
   let formater = new Intl.NumberFormat('en-US',
   {style: 'decimal', 
@@ -198,4 +207,5 @@ export {
     intToHex,
     dataFormat,
     uint8ArrayToText,
+    numberFormatPercent,
 }
