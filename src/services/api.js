@@ -46,6 +46,34 @@ export function getBlocksByPage(options){
     });
 }
 
+export function getForkBlocksByPage(options){
+    return new Promise((resolve, reject)=>{
+        apiCli.request({
+            url: '/reorg/blocks',
+            method: 'GET',
+            ...(options||{})
+        }).then(res=>{
+            resolve(res.data);
+        }).catch(err=>{
+            reject(err.data);
+        });
+    });
+}
+
+export function getForkBlockDetailByPage(hash,options){
+    return new Promise((resolve, reject)=>{
+        apiCli.request({
+            url: `/reorg/blocks/${hash}`,
+            method: 'GET',
+            ...(options||{})
+        }).then(res=>{
+            resolve(res.data);
+        }).catch(err=>{
+            reject(err.data);
+        });
+    });
+}
+
 export function getTransactionsByPage(options){
     return new Promise((resolve, reject)=>{
         apiCli.request({
@@ -59,6 +87,35 @@ export function getTransactionsByPage(options){
         });
     });
 }
+
+export function getPendingTxsByPage(options){
+    return new Promise((resolve, reject)=>{
+        apiCli.request({
+            url: '/pending/txs',
+            method: 'GET',
+            ...(options||{})
+        }).then(res=>{
+            resolve(res.data);
+        }).catch(err=>{
+            reject(err.data);
+        });
+    });
+}
+
+export function getPendingTxsDetailByPage(hash,options){
+    return new Promise((resolve, reject)=>{
+        apiCli.request({
+            url: `/pending/txs/${hash}`,
+            method: 'GET',
+            ...(options||{})
+        }).then(res=>{
+            resolve(res.data);
+        }).catch(err=>{
+            reject(err.data);
+        });
+    });
+}
+
 
 export function getBlockByHash(hash,options){
     return new Promise((resolve, reject)=>{

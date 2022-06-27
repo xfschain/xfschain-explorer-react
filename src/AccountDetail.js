@@ -79,10 +79,6 @@ class AccountDetail extends React.Component {
             history.replace('/404');
             return;
         }
-        try {
-        }catch(e) {
-
-        }
         const { search } = location;
         const sq = qs.parse(search.replace(/^\?/, ''));
         let pageNum = sq['p'];
@@ -119,6 +115,7 @@ class AccountDetail extends React.Component {
         // const timestr = timeformat(new Date(time * 1000));
         const balanceVal = atto2base(this.state.account.balance);
         let typeFormat = (item) => {
+            console.log(item)
             if (item?.type === 1){
                 let contractType = item?.contractType;
                 let contractTypeName = '';

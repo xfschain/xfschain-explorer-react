@@ -1,57 +1,69 @@
 import React from 'react';
 import intl from 'react-intl-universal';
-import { timeformat } from './util';
 import services from './services';
 import { atto2base, atto2nano } from './util/xfslibutil';
 
 import { dataFormat, defaultIntNumberFormat, defaultrNumberFormatFF6, hexToUint8Array, } from './util/common';
-
+import classNames from 'classnames';
 const api = services.api;
-class TXDetail extends React.Component {
+class PendingTxDetail extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            status: 0,
             data: {
-                // id: 33001,
-                // blockHash: "0x000000066bd59cb78e12e76d43706c38218a297d1ebf4717c7618f6efacb284c",
-                // blockHeight: 23325,
-                // blockTime: 1640863204,
-                // version: 0,
-                // from: "YTYQ9j75fcvCB7at2UB6ot2rXPCPPKhx2",
-                // to: "fyjs3YU8AVakCua2etn1uqfkY8dcBUWne",
-                // gasPrice: "10000000000",
-                // gasLimit: "25000",
-                // gasUsed: "25000",
-                // gasFee: "250000000000000",
-                // data: null,
-                // nonce: 198,
-                // value: "420000000000000000",
-                // signature: null,
-                // hash: "0x96884b53f5a0540453e9e2fc92aa963bd46b6deb8fbbb2b8ce3ad8a32c9fa20b",
-                // status: 1,
-                // type: 0
+                data: null,
+                gasLimit: 0,
+                gasPrice: 0,
+                nonce: 0, 
+                from: "",
+                to: "",
+                value: 0,
+                version: 0
             },
-            dataFormat: 'HEX'
+            dataFormat: 'HEX',
+            pingLoopId: 0  
         }
+    }
+    pingLoop(txhash){
+        let loopId = setInterval(async()=>{
+            if (this.status ==1){
+                return;
+            }
+            const data = await api.getPendingTxsDetailByPage(txhash)
+            if (!data) {
+                this.setState({status:1})
+                return
+            }
+        }, 1000);
+        this.setState({pingLoopId: loopId});
+    }
+    componentWillUnmount(){
+        clearInterval(this.state.pingLoopId);
     }
     async componentDidMount() {
         const { history, match } = this.props;
         const { params } = match;
-        // console.log(`data`, data);
-        try {
-            const data = await api.getTransactionByHash(params.hash);
-            this.setState({data: data});
-        } catch (e) {
-            history.replace('/404');
+        
+        if (!params.hash || !/^0x[0-9a-fA-F]{64}$/.test(params.hash)) {
+            // history.replace('/404');
             return;
         }
+        this.pingLoop(params.hash);
+        try {
+            // const data = await api.getPendingTxsDetailByPage(params.hash);
+            // this.setState({data: data});
+            const data = await api.getPendingTxsDetailByPage(params.hash);
+            this.setState({ data: data });
+        }catch(e){
+            // history.replace('/404');
+            return;
+        }
+   
     }
     render() {
-        let time = parseInt(this.state.data.blockTime);
-        const timestr = timeformat(new Date(time * 1000));
-        const valuestr = atto2base(this.state.data.value);
-        const gasPriceVal = atto2nano(this.state.data.gasPrice);
-        const gasFeeVal = atto2base(this.state.data.gasFee);
+        const valuestr = atto2base(this.state.data.value.toString());
+        const gasPriceVal = atto2nano(this.state.data.gasPrice.toString());
         let datastr = '';
         if (this.state.data.data){
             datastr = dataFormat({
@@ -59,15 +71,48 @@ class TXDetail extends React.Component {
                 format: this.state.dataFormat
             }) || 'Cannot Preview!';
         }
-        let statusFormat = ()=>{
-            switch (this.state.data.status){
-                case 1:
-                    return intl.get('TX_DETAIL_STATUS_SUCCESS');
-                default:
-                    return intl.get('TX_DETAIL_STATUS_FAILED');
+        let StatusView = (props)=>{
+            if (this.state.status === 1){
+                return (
+                    <div className="col-md-10">
+                    <div className="d-flex">
+                        <span style={{
+                            marginRight: '1rem'
+                        }}>
+                            <i style={{verticalAlign: 'middle'}} className="ti ti-check"></i>
+                        </span>
+                        <span style={{
+                            marginTop: '.15rem'
+                        }}>
+                            {intl.get('TX_DETAIL_STATUS_SUCCESS')}
+                        </span>
+                    </div>
+                </div>
+                );
             }
+            return (
+                <div className="col-md-10">
+                    <div className="d-flex">
+                        <span style={{
+                            marginRight: '1rem'
+                        }}>
+                            <div className="spinner-border text-muted" style={{color:'#2fb344 !important'}}></div>
+                        </span>
+                        <span style={{
+                            marginTop: '.15rem'
+                        }}>
+                            {intl.get('TX_DETAIL_STATUS_PENDING')}
+                        </span>
+                    </div>
+                </div>
+            );
         }
-
+        let progressStyles = {
+            width: this.state.status === 0?0:'100%'
+        };
+        let progressClasses = classNames({
+            [`progress-bar-indeterminate`]: this.state.status === 0,
+        }, 'progress-bar bg-lime');
         const addrPrefixStyle = {
             fontSize: '.6rem',
             marginRight: this.state.data.type === 1 ? '.2rem':'0',
@@ -77,7 +122,11 @@ class TXDetail extends React.Component {
                 <h1 className="mb-4">
                     {intl.get('PAGE_TITLE_TX_DETAIL')}
                 </h1>
+                
                 <div className="card mb-4">
+                    <div className="progress progress-sm">
+                        <div style={progressStyles} className={progressClasses}></div>
+                    </div>
                     <ul className="list-group list-group-flush">
                         <li className="list-group-item py-3">
                             <div className="row">
@@ -91,28 +140,12 @@ class TXDetail extends React.Component {
                         </li>
                         <li className="list-group-item py-3">
                             <div className="row">
-                                <div className="col-md-2">
+                                <div className="col-md-2" style={{
+                                    marginTop: '.2rem'
+                                }}>
                                     {intl.get('TX_DETAIL_STATUS')}:
                                 </div>
-                                <div className="col-md-10">
-                                    <div className="d-flex">
-                                        {statusFormat(this.state.data.status)}
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li className="list-group-item py-3">
-                            <div className="row">
-                                <div className="col-md-2">
-                                    {intl.get('TX_DETAIL_BLOCK')}:
-                                </div>
-                                <div className="col-md-10">
-                                    <div className="d-flex">
-                                        <a href={`/blocks/${this.state.data.blockHash}`}>
-                                            {this.state.data.blockHeight}
-                                        </a>
-                                    </div>
-                                </div>
+                                {<StatusView />}
                             </div>
                         </li>
                         <li className="list-group-item py-3">
@@ -128,22 +161,14 @@ class TXDetail extends React.Component {
                         <li className="list-group-item py-3">
                             <div className="row">
                                 <div className="col-md-2">
-                                    {intl.get('TX_DETAIL_TIME')}:
-                                </div>
-                                <div className="col-md-10">
-                                    {timestr}
-                                </div>
-                            </div>
-                        </li>
-                        <li className="list-group-item py-3">
-                            <div className="row">
-                                <div className="col-md-2">
                                     {intl.get('TX_DETAIL_FROM')}:
                                 </div>
                                 <div className="col-md-10">
-                                    <a href={`/accounts/${this.state.data.from}`}>
-                                        {this.state.data.from}
-                                    </a>
+                                    <div className="d-flex">
+                                        <a href={`/accounts/${this.state.data.from}`}>
+                                            {this.state.data.from}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </li>
@@ -153,12 +178,14 @@ class TXDetail extends React.Component {
                                     {intl.get('TX_DETAIL_TO')}:
                                 </div>
                                 <div className="col-md-10">
-                                    <span style={addrPrefixStyle}>
-                                        {`${this.state.data.type === 1 ? '[CREATE]': ''}`}
-                                    </span>
-                                    <a href={`/accounts/${this.state.data.type === 1 ? this.state.data.contractAddress:this.state.data.to}`}>
+                                    <div className="d-flex">
+                                        <span style={addrPrefixStyle}>
+                                            {`${this.state.data.type === 1 ? '[CREATE]': ''}`}
+                                        </span>
+                                        <a href={`/accounts/${this.state.data.type === 1 ? this.state.data.contractAddress:this.state.data.to}`}>
                                         {this.state.data.type === 1 ? this.state.data.contractAddress:this.state.data.to}
-                                    </a>
+                                       </a>
+                                    </div>
                                 </div>
                             </div>
                         </li>
@@ -195,26 +222,6 @@ class TXDetail extends React.Component {
                         <li className="list-group-item py-3">
                             <div className="row">
                                 <div className="col-md-2">
-                                    {intl.get('TX_DETAIL_GAS_USED')}:
-                                </div>
-                                <div className="col-md-10">
-                                    {defaultIntNumberFormat(this.state.data.gasUsed)}
-                                </div>
-                            </div>
-                        </li>
-                        <li className="list-group-item py-3">
-                            <div className="row">
-                                <div className="col-md-2">
-                                    {intl.get('TX_DETAIL_GAS_FEE')}:
-                                </div>
-                                <div className="col-md-10">
-                                    {defaultrNumberFormatFF6(gasFeeVal)} XFSC
-                                </div>
-                            </div>
-                        </li>
-                        <li className="list-group-item py-3">
-                            <div className="row">
-                                <div className="col-md-2">
                                     {intl.get('TX_DETAIL_NONCE')}:
                                 </div>
                                 <div className="col-md-10">
@@ -223,6 +230,7 @@ class TXDetail extends React.Component {
                             </div>
                         </li>
                     </ul>
+                    
                 </div>
 
                 <div className="card">
@@ -282,4 +290,4 @@ class TXDetail extends React.Component {
     }
 }
 
-export default TXDetail;
+export default PendingTxDetail;

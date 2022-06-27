@@ -46,58 +46,58 @@ class TxPending extends React.Component {
     componentDidMount() {
         const { history, match } = this.props;
         const { params } = match;
-        let websocketurl = baseWebsocketurl + '/listen';
-        const socket = new WebSocket(websocketurl);
-        socket.onopen = (e) =>{
-            console.log('Success listen', websocketurl);
-        };
-        socket.onclose = (e)=>{
-            console.log('Socket listen closed');
-        }
-        socket.onerror = (e)=>{
-            console.log('WebSocket error:', e);
-        };
-        socket.onmessage = (e)=>{
-            if (e.data.size===0){
-                return;
-            }
-            e.data.arrayBuffer().then((data)=>{
-                let datauint8 = new Uint8Array(data);
-                let dtype = datauint8[0];
-                if (dtype === 2){
-                    console.log('pong');
-                    return;
-                }
-                let utf8decoder = new TextDecoder();
-                let datastring = utf8decoder.decode(datauint8);
-                let dataobj = JSON.parse(datastring);
-                const {type} = dataobj;
-                if (type !== 2 || !dataobj.data || !dataobj.data.hash){
-                    return;
-                }
-                let txhash = dataobj.data.hash;
-                if (txhash !== params.hash){
-                    return;
-                }
-                this.setState({status: 1});
-            });
-        }
-        this.pingLoop(socket);
-        api.jsonrpc({
-            "method": "TxPool.GetTranByHash",
-            "params":{
-                "hash": params.hash,
-            },
-            "id": 1,
-            "jsonrpc": "2.0"
-        }).then(data=>{
-            if (!data || !data.result){
-                throw Error('not found');
-            }
-            this.setState({data: data.result});
-        }).catch((e)=>{
-            history.replace('/404');
-        });
+        // let websocketurl = baseWebsocketurl + '/listen';
+        // const socket = new WebSocket(websocketurl);
+        // socket.onopen = (e) =>{
+        //     console.log('Success listen', websocketurl);
+        // };
+        // socket.onclose = (e)=>{
+        //     console.log('Socket listen closed');
+        // }
+        // socket.onerror = (e)=>{
+        //     console.log('WebSocket error:', e);
+        // };
+        // socket.onmessage = (e)=>{
+        //     if (e.data.size===0){
+        //         return;
+        //     }
+        //     e.data.arrayBuffer().then((data)=>{
+        //         let datauint8 = new Uint8Array(data);
+        //         let dtype = datauint8[0];
+        //         if (dtype === 2){
+        //             console.log('pong');
+        //             return;
+        //         }
+        //         let utf8decoder = new TextDecoder();
+        //         let datastring = utf8decoder.decode(datauint8);
+        //         let dataobj = JSON.parse(datastring);
+        //         const {type} = dataobj;
+        //         if (type !== 2 || !dataobj.data || !dataobj.data.hash){
+        //             return;
+        //         }
+        //         let txhash = dataobj.data.hash;
+        //         if (txhash !== params.hash){
+        //             return;
+        //         }
+        //         this.setState({status: 1});
+        //     });
+        // }
+        // this.pingLoop(socket);
+        // api.jsonrpc({
+        //     "method": "TxPool.GetTranByHash",
+        //     "params":{
+        //         "hash": params.hash,
+        //     },
+        //     "id": 1,
+        //     "jsonrpc": "2.0"
+        // }).then(data=>{
+        //     if (!data || !data.result){
+        //         throw Error('not found');
+        //     }
+        //     this.setState({data: data.result});
+        // }).catch((e)=>{
+        //     // history.replace('/404');
+        // });
     }
     render() {
         const valuestr = atto2base(this.state.data.value.toString());

@@ -125,7 +125,7 @@ const ItemsList = (props)=>{
                                                 width: '100%',
                                             }}>
                                                 {intl.get('NF_TOKEN_ITEMS_OWNER')}
-                                                : <a href={`/accounts/${item?.contractAddress}`}>
+                                                : <a href={`/accounts/${item?.owner}`}>
                                                     {item.owner}
                                                 </a>
                                             </div>
@@ -499,17 +499,7 @@ class NFTokenItem extends React.Component {
                                 {intl.get('NF_TOKENS_ITEMS')}:
                             </div>
                             <div className="col-md-10">
-                                {defaultIntNumberFormat(this.state?.data.tokens)}
-                            </div>
-                        </div>
-                    </li>
-                    <li className="list-group-item py-3">
-                        <div className="row">
-                            <div className="col-md-2">
-                            {intl.get('TOKENS_TXS')}:
-                            </div>
-                            <div className="col-md-10">
-                            {defaultIntNumberFormat(this.state?.data.txs)}
+                                {defaultIntNumberFormat(this.state?.data.items)}
                             </div>
                         </div>
                     </li>
@@ -519,17 +509,17 @@ class NFTokenItem extends React.Component {
                             {intl.get('TOKENS_HOLDERS')}:
                             </div>
                             <div className="col-md-10">
-                            {defaultIntNumberFormat(this.state?.data.holders)}
+                            {defaultIntNumberFormat(this.state.data.holderNum)}
                             </div>
                         </div>
                     </li>
-                    <li className="list-group-item py-3">
+                      <li className="list-group-item py-3">
                         <div className="row">
                             <div className="col-md-2">
-                                {intl.get('ACCOUNT_DETAIL_NONCE')}:
+                            {intl.get('TOKENS_TXS')}:
                             </div>
                             <div className="col-md-10">
-                            {defaultIntNumberFormat(this.state.data.nonce)}
+                            {defaultIntNumberFormat(this.state.data.txNum)}
                             </div>
                         </div>
                     </li>

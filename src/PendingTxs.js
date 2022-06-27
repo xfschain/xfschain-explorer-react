@@ -3,15 +3,15 @@ import React from 'react';
 import {
     useLocation,
 } from "react-router-dom";
-import { Table, Pagination } from './components';
 import intl from 'react-intl-universal';
+import { Table, Pagination } from './components';
 import services from './services';
-import { atto2base, bigToBase } from './util/xfslibutil';
-import { defaultIntNumberFormat, defaultrNumberFormatFF6 } from './util/common';
+import { atto2base } from './util/xfslibutil';
+import { defaultrNumberFormatFF4 } from './util/common';
 const api = services.api;
 function PaginationWapper(props) {
     let location = useLocation();
-    const { total, pageSize } = props;
+    const { total, pageSize, } = props;
     const { search } = location;
     const sq = qs.parse(search.replace(/^\?/, ''));
     let pageNum = sq['p'];
@@ -23,12 +23,11 @@ function PaginationWapper(props) {
             firstLableText={intl.get('PAGE_TABLE_PAGINATION_FIRST')}
             pageLableText={intl.get('PAGE_TABLE_PAGINATION_PAGE')}
             lastLableText={intl.get('PAGE_TABLE_PAGINATION_LAST')}
-            pathname='/nfts'
+            pathname='/txs'
             pageSize={pageSize} total={total} />
     );
 }
-
-class NFTokens extends React.Component {
+class PendingTxs extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -37,40 +36,21 @@ class NFTokens extends React.Component {
                 paddingTop: '1rem',
                 paddingBottom: '1rem'
             },
+            data: [],
             page: {
                 pageSize: 20,
                 total: 0
-            },
-            data: [
-                // {
-                //     id: 65,
-                //     address: "RAvv3vb8USNbZXFfrxZGm4EpjDrUGYjAB",
-                //     balance: "2427000000000000000000",
-                //     nonce: 0,
-                //     extra: null,
-                //     code: null,
-                //     stateRoot: null,
-                //     alias: null,
-                //     type: 0,
-                //     display: true,
-                //     fromStateRoot: "0x2766f150cf6f04cea92ef70a5486bafce51c8dd89e027a229778307e7a58ec0d",
-                //     fromBlockHeight: 16116,
-                //     fromBlockHash: "0x0000003eb9acf836798f443c0f3eecad2c951acad7fbb26272a582b221654ee8",
-                //     createTime: "2022-01-05 08:43:43",
-                //     updateTime: "2022-01-05 08:43:43"
-                // },
-
-            ],
+            }
         }
     }
     async componentDidMount() {
-        const { history, location } = this.props;
+        const { location } = this.props;
         const { search } = location;
         const sq = qs.parse(search.replace(/^\?/, ''));
         let pageNum = sq['p'];
         pageNum = parseInt(pageNum || 1);
         try {
-            let pagedata = await api.getNFTokensByPage({
+            let pagedata = await api.getPendingTxsByPage({
                 params: {
                     p: pageNum,
                 }
@@ -94,85 +74,95 @@ class NFTokens extends React.Component {
             });
         } catch (e) {
             console.warn(e);
+            // history.replace('/404');
         }
     }
     render() {
-
         return (
             <div>
                 <h1 className="mb-4">
-                    {intl.get('PAGE_TITLE_NF_TOKENS')}
+                    {intl.get('PAGE_TITLE_PENDING_TXS')}
                 </h1>
                 <div className="card">
                     <div className="card-table table-responsive">
                         <Table columns={[
                             {
-                                name: intl.get('TOKENS_NAME'),
-                                render: (item) => {
-                                    return (
-                                        <a href={`/nfts/${item.contractAddress}`}>
-                                            {item.name}
-                                        </a>
-                                    );
-                                }
-                            },
-                            {
-                                name: intl.get('TOKENS_SYMBOL'),
-                                thStyle: { textAlign: 'right' },
-                                tdStyle: {textAlign: 'right',width:'0' },
-                                render: (item) => {
-                                    return (
-                                        <span>
-                                            {item.symbol}
-                                        </span>
-                                    );
-                                }
-                            },
-                            {
-                                name: intl.get('TOKENS_HOLDERS'),
-                                thStyle: { textAlign: 'right' },
-                                tdStyle: {textAlign: 'right',width:'0' },
-                                render: (item) => {
-                                    return (
-                                        <span>
-                                            {defaultIntNumberFormat(item.holderNum)}
-                                        </span>
-                                    );
-                                }
-                            },
-                            {
-                                name: intl.get('NF_TOKENS_ITEMS'),
-                                thStyle: { textAlign: 'right' },
-                                tdStyle: {textAlign: 'right',width:'0' },
-                                render: (item) => {
-                                    return (
-                                        <span>
-                                            {defaultIntNumberFormat(item.items)}
-                                        </span>
-                                    );
-                                }
-                            },
-                            {
-                                name: intl.get('ACCOUNTS_TXS'),
-                                thStyle: { textAlign: 'right' },
-                                tdStyle: { textAlign: 'right',width:'0'},
-                                render: (item) => {
-                                    return (
-                                        <span>
-                                            {defaultIntNumberFormat(item.txNum)}
-                                        </span>
-                                    );
-                                }
-                            },
-                            {
-                                name: intl.get('ACCOUNTS_UPDATE_TIME'),
-
-                                thStyle: { textAlign: 'right' },
-                                tdStyle: { textAlign: 'right', width: 0 },
+                                name: intl.get('TXS_TIME'),
                                 render: (item) => {
                                     return (
                                         <span className="fs-6">
-                                            {item.updateTime}
+                                            {item.createTime}
+                                        </span>
+                                    );
+                                }
+                            },
+                            {
+                                field: 'hash', name: intl.get('TXS_HASH'),
+                                tdStyle: { maxWidth: '180px' },
+                                render: (item) => {
+                                    return (
+                                        <div className="text-truncate">
+                                            <a href={`/pendingtxs/${item.hash}`}>
+                                                {item.hash}
+                                            </a>
+                                        </div>
+                                    );
+                                }
+                            },
+                            
+                            {
+                                field: 'from', name: intl.get('TXS_FROM'),
+                                tdStyle: { maxWidth: '120px' },
+                                render: (item) => {
+                                    return (
+                                        <div className="text-truncate">
+                                            <a href={`/accounts/${item.from}`}>
+                                                {item.from}
+                                            </a>
+                                        </div>
+
+                                    );
+                                }
+                            },
+                            {
+                                field: 'to', name: intl.get('TXS_TO'),
+                                tdStyle: {maxWidth: '120px' },
+                                render: (item) => {
+                                    const prefixStyle = {
+                                        fontSize: '.6rem',
+                                        marginRight: item.type === 1 ? '.2rem':'0',
+                                    };
+                                    let toAddress = '';
+                                    if (item.type === 0){
+                                        toAddress = item.to;
+                                    }else if (item.type === 1){
+                                        const contractAddress = item.contractAddress;
+                                        toAddress = contractAddress;
+                                    }
+                                    return (
+                                        <div className="text-truncate">
+                                            <span style={prefixStyle}>
+                                                {`${item.type === 1 ? '[CREATE]': ''}`}
+                                            </span>
+                                            <a href={`/accounts/${toAddress}`}>
+                                                {toAddress}
+                                            </a>
+                                        </div>
+                                    );
+                                }
+                            },
+                            {
+                                field: 'value', name: intl.get('TXS_VALUE'),
+                                thStyle: { textAlign: 'right' },
+                                tdStyle: { textAlign: 'right' },
+                                render: (item) => {
+                                    let val = atto2base(item.value);
+                                    return (
+                                        <span>
+                                            {defaultrNumberFormatFF4(val)}
+                                            <span style={{
+                                                fontSize: '.8rem',
+                                            }}> XFSC</span>
                                         </span>
                                     );
                                 }
@@ -190,4 +180,4 @@ class NFTokens extends React.Component {
         );
     }
 }
-export default NFTokens;
+export default PendingTxs;

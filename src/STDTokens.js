@@ -161,7 +161,7 @@ class STDTokens extends React.Component {
                                 render: (item) => {
                                     return (
                                         <span>
-                                            {defaultIntNumberFormat(item.holders)}
+                                            {defaultIntNumberFormat(item.holderNum)}
                                         </span>
                                     );
                                 }
@@ -173,7 +173,7 @@ class STDTokens extends React.Component {
                                 render: (item) => {
                                     return (
                                         <span>
-                                            {defaultIntNumberFormat(item.txs)}
+                                            {defaultIntNumberFormat(item.txNum)}
                                         </span>
                                     );
                                 }

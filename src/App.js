@@ -16,6 +16,8 @@ import './App.css';
 import Home from './Home';
 
 import Blocks from './Blocks';
+import ForkBlocks from './ForkBlocks';
+import ForkBlockDetail from './ForkBlockDetail';
 import Accounts from "./Accounts";
 import Transactions from './Transactions';
 import BlockDetail from './BlockDetail';
@@ -27,7 +29,8 @@ import classNames from 'classnames';
 import ErrorPage from './404';
 import BlankPage from './BlankPage';
 import services from './services';
-import TxPending from './TxPending';
+import PendingTxs from './PendingTxs';
+import PendingTxDetail from './PendingTxDetail';
 import STDTokens from './STDTokens';
 import STDTokenItem from './STDTokenItem';
 import NFTokens from './NFTokens';
@@ -136,7 +139,13 @@ function SearchCompoent({history}){
       // });
       return;
     }else if(type === 5){
-      history.replace(`/pending/${searchq}`);
+      history.replace(`/pendingtxs/${searchq}`);
+      // history.replace(`/loading`, {
+      //   to: `/pending/${searchq}`
+      // });
+      return;
+    } else if(type === 6){
+      history.replace(`/fork_blocks/${searchq}`);
       // history.replace(`/loading`, {
       //   to: `/pending/${searchq}`
       // });
@@ -301,8 +310,14 @@ class App extends React.Component {
                   <NavItem href={'/blocks'}>
                     {intl.get('NAV_BLOCKS')}
                   </NavItem>
+                  <NavItem href={'/fork_blocks'}>
+                    {intl.get('NAV_FORK_BLOCK')}
+                  </NavItem>
                   <NavItem href={'/txs'}>
                     {intl.get('NAV_TXS')}
+                  </NavItem>
+                  <NavItem href={'/pendingtxs'}>
+                    {intl.get('NAV_PENDING_TXS')}
                   </NavItem>
                   <NavItem href={'/accounts'}>
                     {intl.get('NAV_ACCOUNTS')}
@@ -334,17 +349,21 @@ class App extends React.Component {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/blocks" component={Blocks} />
+            <Route exact path="/fork_blocks" component={ForkBlocks} />
+            <Route exact path="/fork_blocks/:hash" component={ForkBlockDetail} />
             <Route exact path="/accounts" component={Accounts} />
             <Route exact path="/std_tokens" component={STDTokens} />
             <Route exact path="/std_tokens/:address" component={STDTokenItem} />
             <Route exact path="/txs" component={Transactions} />
+            <Route exact path="/pendingtxs" component={PendingTxs} />
+            <Route exact path="/pendingtxs/:hash" component={PendingTxDetail} />
             <Route exact path="/tokens" component={Tokens} />
             <Route exact path="/nfts" component={NFTokens} />
             <Route exact path="/nfts/:address" component={NFTokenItem} />
             <Route exact path="/blocks/:hash" component={BlockDetail} />
             <Route exact path="/txs/:hash" component={TxDetail} />
             <Route exact path="/accounts/:address" component={AccountDetail} />
-            <Route exact path="/pending/:hash" component={TxPending} />
+            {/* <Route exact path="/pending/:hash" component={TxPending} /> */}
             <Route exact path="/search" component={SearchCompoent} />
             {/* <Route exact path="/tokens/:address" component={TokenDetail}/> */}
             {/* <Route exact path="/nfts/:address" component={TokenDetail}/> */}
@@ -367,8 +386,23 @@ class App extends React.Component {
                 </a>
               </li>
               <li className="nav-item">
+                <a href="/fork_blocks" className="nav-link px-2 text-muted">
+                  {intl.get('NAV_FORK_BLOCK')}
+                </a>
+              </li>
+              <li className="nav-item">
                 <a href="/txs" className="nav-link px-2 text-muted">
                   {intl.get('NAV_TXS')}
+                </a>
+              </li>
+              <li className="nav-item">
+                <a href="/pendingtxs" className="nav-link px-2 text-muted">
+                  {intl.get('NAV_PENDING_TXS')}
+                </a>
+              </li>
+              <li className="nav-item">
+                <a href="/pendingtxs" className="nav-link px-2 text-muted">
+                  {intl.get('NAV_PENDING_TXS')}
                 </a>
               </li>
               <li className="nav-item">
