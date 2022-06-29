@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import _ from 'lodash';
 import axios from 'axios';
 import intl from 'react-intl-universal';
-import React from 'react';
+import {PureComponent} from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -14,6 +14,8 @@ import {
 // import 'bootstrap/dist/css/bootstrap.css';
 import './App.css';
 import Home from './Home';
+
+import PullDown from "./components/pulldown"
 
 import Blocks from './Blocks';
 import ForkBlocks from './ForkBlocks';
@@ -38,6 +40,7 @@ import NFTokenItem from './NFTokenItem';
 const api = services.api;
 function NavItem({ href, children, ...props }) {
   let location = useLocation();
+  let history = useHistory();
   let { pathname } = location;
   let hrefmatch = () => {
     return (href && href !== '/' && pathname.startsWith(href))
@@ -50,11 +53,12 @@ function NavItem({ href, children, ...props }) {
   )
   return (
     <li className={classnames}>
-      <a className="nav-link" href={href}>
+      {/* <a className="nav-link" href={href} */}
+      <span className="nav-link"  onClick={e=>history.push(href)}>
         <span className="nav-link-title">
           {children}
         </span>
-      </a>
+      </span>
     </li>
   );
 }
@@ -85,11 +89,11 @@ function getUrlParams(key) {
   const params = new URLSearchParams(window.location.search);
   return params.get(key);
 }
-function SearchBar({children,value}) {
+function SearchBar({ children, value }) {
   const history = useHistory();
   // const location = useLocation();
   // console.log('bar',history, location);
-  let handleSearchSubmit = async (e)=>{
+  let handleSearchSubmit = async (e) => {
     e.preventDefault();
     // console.log('search', this.state.searchq);
     history.push(`/search?q=${value}`);
@@ -102,16 +106,16 @@ function SearchBar({children,value}) {
           {/* Download SVG icon from http://tabler-icons.io/i/search */}
           <svg xmlns="http://www.w3.org/2000/svg" className="icon" width={24} height={24} viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><circle cx={10} cy={10} r={7} /><line x1={21} y1={21} x2={15} y2={15} /></svg>
         </span>
-        { children }
-        
+        {children}
+
       </div>
     </form>
   );
 }
 
-function SearchCompoent({history}){
+function SearchCompoent({ history }) {
   let searchq = getUrlParams('q');
-  if (!searchq || searchq.length === 0){
+  if (!searchq || searchq.length === 0) {
     history.replace('/404');
     return;
   }
@@ -119,32 +123,32 @@ function SearchCompoent({history}){
     params: {
       q: searchq,
     }
-  }).then((resp)=>{
+  }).then((resp) => {
     let { type, pathValue } = resp;
-    if (type === 1){
+    if (type === 1) {
       history.replace(`/blocks/${searchq}`);
       return;
-    }else if(type === 2){
+    } else if (type === 2) {
       history.replace(`/txs/${searchq}`);
       return;
-    }else if(type === 3){
+    } else if (type === 3) {
       history.replace(`/accounts/${searchq}`);
 
       return;
-    }else if(type === 4){
+    } else if (type === 4) {
       history.replace(`/blocks/${pathValue}`);
       // history.push(`/blocks/${pathValue}`);
       // history.replace(`/loading`, {
       //   to: `/blocks/${pathValue}`
       // });
       return;
-    }else if(type === 5){
+    } else if (type === 5) {
       history.replace(`/pendingtxs/${searchq}`);
       // history.replace(`/loading`, {
       //   to: `/pending/${searchq}`
       // });
       return;
-    } else if(type === 6){
+    } else if (type === 6) {
       history.replace(`/fork_blocks/${searchq}`);
       // history.replace(`/loading`, {
       //   to: `/pending/${searchq}`
@@ -152,21 +156,45 @@ function SearchCompoent({history}){
       return;
     }
     history.replace('/404');
-  }).catch((e)=>{
+  }).catch((e) => {
     history.replace('/404');
   });
   return (
     <div></div>
   );
 }
-class App extends React.Component {
+class App extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       pathname: '/',
       showMNav: false,
       initDone: false,
-      searchq: ''
+      searchq: '',
+      pullList: [
+        {
+          href: '/blocks',
+          title: '区块'
+          // intl.get('NAV_BLOCKS')
+        },
+        {
+          href: '/fork_blocks',
+          title: '分叉快'
+          // intl.get('NAV_FORK_BLOCK')
+        }
+      ],
+      pullList2: [
+        {
+          href: '/txs',
+          title: '交易'
+          // intl.get('NAV_TXS')
+        },
+        {
+          href: '/pendingtxs',
+          title: '未打包交易'
+          // intl.get('NAV_PENDING_TXS')
+        }
+      ]
     };
   }
   componentDidMount() {
@@ -217,6 +245,12 @@ class App extends React.Component {
     window.sessionStorage.setItem('_network', netid);
     window.location.search = `?network=${netid}`;
   }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   if (this.props.showMNav !== nextProps.showMNav) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
   render() {
     let currentLocale = this.getCurrentLocale();
     let currentNetwork = this.getCurrentNetwork();
@@ -307,18 +341,8 @@ class App extends React.Component {
                   <NavItem href={'/'}>
                     {intl.get('NAV_HOME')}
                   </NavItem>
-                  <NavItem href={'/blocks'}>
-                    {intl.get('NAV_BLOCKS')}
-                  </NavItem>
-                  <NavItem href={'/fork_blocks'}>
-                    {intl.get('NAV_FORK_BLOCK')}
-                  </NavItem>
-                  <NavItem href={'/txs'}>
-                    {intl.get('NAV_TXS')}
-                  </NavItem>
-                  <NavItem href={'/pendingtxs'}>
-                    {intl.get('NAV_PENDING_TXS')}
-                  </NavItem>
+                  <PullDown pullList={this.state.pullList} />
+                  <PullDown pullList={this.state.pullList2} />
                   <NavItem href={'/accounts'}>
                     {intl.get('NAV_ACCOUNTS')}
                   </NavItem>
@@ -331,12 +355,12 @@ class App extends React.Component {
                 </ul>
                 <div className="my-2 my-md-0 flex-grow-1 home-md-searchbar order-first order-md-last">
                   <SearchBar value={this.state.searchq}>
-                  <input type="text" className="form-control"
-                        value={this.state.searchq}
-                        onChange={(e) => {
-                          this.setState({ searchq: e.target.value });
-                        }}
-                        placeholder={intl.get('PLACEHOLDER_SEARCH_BAR')} />
+                    <input type="text" className="form-control"
+                      value={this.state.searchq}
+                      onChange={(e) => {
+                        this.setState({ searchq: e.target.value });
+                      }}
+                      placeholder={intl.get('PLACEHOLDER_SEARCH_BAR')} />
                   </SearchBar>
                 </div>
               </div>
@@ -367,7 +391,8 @@ class App extends React.Component {
             <Route exact path="/search" component={SearchCompoent} />
             {/* <Route exact path="/tokens/:address" component={TokenDetail}/> */}
             {/* <Route exact path="/nfts/:address" component={TokenDetail}/> */}
-            <Route exact path="/404" component={ErrorPage} />
+            {/* <Route exact path="/404" component={ErrorPage} /> */}
+            <Route exact component={ErrorPage} />
             <Route exact path="/loading" component={BlankPage} />
           </Switch>
         </main>

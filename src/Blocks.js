@@ -29,7 +29,7 @@ function PaginationWapper(props) {
     );
   }
   
-class Blocks extends React.Component {
+class Blocks extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {

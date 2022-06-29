@@ -9,7 +9,6 @@ import Chart from "react-apexcharts";
 import moment from 'moment';
 const api = services.api;
 
-
 function splitAndEllipsisAddress(address, len=5){
     let start = address.substring(0, len);
     let last = address.substring(address.length, address.length-len);

@@ -72,14 +72,14 @@ export default function Table(props) {
         <table className="table table-vcenter" >
                 <thead>
                     <tr>
-                        {columns.map((item) => {
+                        {columns.map((item,index) => {
                             let { field, name,thClassName, thStyle } = item;
                             field = field || '';
                             name = name || '';
                             return (
                                 <th className={thClassName}
                                     style={{...thStyle,whiteSpace: 'nowrap',}}
-                                    key={field}>
+                                    key={index}>
                                     {name}
                                 </th>
                             );

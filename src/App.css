@@ -65,6 +65,55 @@
   }
 }
 
+/* #navbar-menu > div > div > ul > li:nth-child(2) > div > div > div > li.active.nav-item.active{
+  background: rgba(32, 107, 196, 0.04);
+}
+#navbar-menu > div > div > ul > li:nth-child(2) > div > div > div > li:nth-child(1) > a > span{
+  color: #206bc4;
+}
+.navbar-expand-md .navbar-light .nav-item.active:after, .navbar-expand-md.navbar-light .nav-item.active:after{
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.25rem;
+  border: 0 solid transparent;
+  border-bottom-width: 2px;
+} */
+
+.dropdown-menu{
+  padding: 0;
+}
+/* 手机适配 */
+@media (max-width: 768px){
+  .card-footer{
+    padding: 10px 3px;
+    font-size: .5em;
+  }
+  .page-link{
+    padding: 0;
+  }
+  .card-footer > div > ul > li:nth-child(1){
+    width: 20px;
+  }
+  .card-footer > div > ul > li:nth-child(2){
+    width: 26px;
+  }
+  .card-footer > div > ul > li:nth-child(4){
+    width: 22px;
+  }
+  #root > div.container > footer > p{
+    padding: 0 8px 14px 8px;
+  }
+  .justify-content-end {
+    display: flex;
+    justify-content: flex-start!important;
+  }
+  .container > footer > ul > li > a{
+    padding: 4px 8px;
+  }
+}
+
 .home-data-nav{                                                                                                                                     display: flex;                                                                                                                                  padding: 0;                                                                                                                                     margin: 0;                                                                                                                                      list-style: none;                                                                                                                               border-bottom: 0.0625rem solid rgba(231,234,243,.7);                                                                                        }                                                                                                                                               .home-data-nav .nav-item {                                                                                                                          white-space: nowrap;
     display: block;
 }                                                                                                                                               

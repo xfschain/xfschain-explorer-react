@@ -111,7 +111,7 @@ const ItemsList = (props)=>{
                                     }}
                                         src={xfsplaceholder} />
                                 </a>
-                                <div class="card-body">
+                                <div className="card-body">
                                     <div>
                                         <div>
                                             <div>
