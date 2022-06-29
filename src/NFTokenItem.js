@@ -13,6 +13,7 @@ import classNames from 'classnames';
 import qs from 'qs';
 import { jsonrpc } from './services/api';
 import { flatMap } from 'lodash';
+import axios from 'axios';
 
 function TableNav(props){
     const {data,} = props;
@@ -64,13 +65,68 @@ function PaginationWapper(props) {
     );
 }
 const api = services.api;
+const fetchCli = axios.create({
+  headers: {
+    'Pragma': 'no-cache',
+    'Cache-Control': 'no-cache',
+    'Expires': '0',
+  },
+});
+
+function fetchTokenImage(url){
+  return new Promise(async (resolve, reject)=>{
+    if (!url) {
+      reject(Error('tokenUri is empty'));
+      return;
+    }
+    try {
+      const response = await fetchCli.get(url, {
+        responseType: 'json',
+      });
+      if (response.status !== 200){
+        reject(Error('failed fetch tokenUri'));
+        return;
+      }
+      const data = response.data;
+      const imageUrl = data?.image;
+      if (!imageUrl){
+        reject(Error('failed parse schema from tokenUri'));
+        return;
+      }
+      const imageUrlResponse = await fetchCli.get(imageUrl,{
+        responseType: 'blob'
+      });
+      
+      if(imageUrlResponse.status !== 200){
+        reject(Error('failed fetch imageUrl'));
+        return;
+      }
+      const imageUrlHeader = imageUrlResponse.headers; 
+      const imageType = imageUrlHeader['content-type'];
+      const allowsImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+      if (!allowsImageTypes.includes(imageType)){
+        reject(Error('unsupported image type'));
+        return;
+      }
+      resolve(imageUrl);
+    }catch(e){
+      reject(e);
+    }
+  });
+}
 function ImageView({tokenUri}){
     const [imageData, setImageData] = useState(xfsplaceholder);
     useEffect(()=>{
         var fetchImageUrl =  async (path)=>{
             if(!path) return;
-            const obj = await api.nftToken(path);
-            setImageData(obj?.image??xfsplaceholder);
+            try {
+              const imageUrl = await fetchTokenImage(path);
+              setImageData(imageUrl);
+            }catch(e){
+              console.warn(`failed fetch tokenUri ${path}:`, e);
+            }
+            // const obj = await api.nftToken(path);
+            //setImageData(obj?.image??xfsplaceholder);
         }
         fetchImageUrl(tokenUri).catch(console.warn);
     }, []);
@@ -129,7 +185,7 @@ const ItemsList = (props)=>{
                         }} key={`${item.tokenId}`}>
                             <div className="card card-sm">
                                 <ImageView tokenUri={item?.tokenUri} />
-                                <div class="card-body">
+                                <div className="card-body">
                                     <div>
                                         <div>
                                             <div>
