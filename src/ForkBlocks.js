@@ -57,7 +57,6 @@ class ForkBlocks extends React.PureComponent {
             }});
             let {total,records} = pagedata;
             let pageSize = this.state.page.pageSize;
-            console.log(pageSize)
             let pn = parseInt(total / pageSize);
             let mod = total % pageSize;
             if (mod > 0) {

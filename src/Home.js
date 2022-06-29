@@ -134,7 +134,6 @@ class Home extends React.Component {
     }
     
     componentDidMount() {
-        console.log('EntryHomePage');
         api.getStatus().then((data)=>{
             this.setState({
                 status: data

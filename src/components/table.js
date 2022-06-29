@@ -3,13 +3,12 @@ import React from 'react';
 // import './table.css';
 
 import empty from './empty.svg';
-
 function mergeTableData(columns = [], data = []) {
-    console.log('data', data);
+    // console.log('data', data);
     return data.map((item, index) => {
         return (
             <tr key={String(index)}>
-                {columns.map((item2) => {
+                {columns.map((item2,index) => {
                     const itemKey = item2.field || '';
                     const itemValue = item[itemKey];
                     const itemComponentFn = item2.component;
@@ -17,7 +16,7 @@ function mergeTableData(columns = [], data = []) {
                     const tdstyle = item2.tdStyle;
                     const tdcss = item2.tdClassName;
                     return (
-                        <td key={itemKey} style={{...tdstyle,fontSize:'1rem', 
+                        <td key={String(item2.address)+index} style={{...tdstyle,fontSize:'1rem', 
                         paddingTop: '1rem',
                         paddingBottom: '1rem',
                         whiteSpace: 'nowrap'}} className={tdcss} data-th={itemKey}>
