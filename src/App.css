@@ -102,6 +102,9 @@
 .home-data-nav{                                                                                                                                     display: flex;                                                                                                                                  padding: 0;                                                                                                                                     margin: 0;                                                                                                                                      list-style: none;                                                                                                                               border-bottom: 0.0625rem solid rgba(231,234,243,.7);                                                                                        }                                                                                                                                               .home-data-nav .nav-item {                                                                                                                          white-space: nowrap;
     display: block;
 }                                                                                                                                               
+.nav-item {
+  cursor: pointer!important;
+}
 .home-data-nav .nav-item .nav-link {                                                                                                                
 	padding: 1rem 20px;                                                                                                                             
 	display: block;                                                                                                                                 

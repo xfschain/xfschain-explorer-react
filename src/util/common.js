@@ -55,6 +55,10 @@ function defaultrNumberFormatFF4(num) {
     return defaultrNumberFormatFF(num, 9);
   }
   function defaultrNumberFormatFF(num,digits) {
+    const ns = String(num).split('.');
+    if(ns[0].length > 17){
+    return '<TOO MANY>';
+  }
     let formater = new Intl.NumberFormat('en-US',
     {style: 'decimal', 
     minimumIntegerDigits: 1,
