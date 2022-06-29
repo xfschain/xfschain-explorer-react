@@ -46,7 +46,7 @@ class PendingTxDetail extends React.Component {
         const { params } = match;
         
         if (!params.hash || !/^0x[0-9a-fA-F]{64}$/.test(params.hash)) {
-            // history.replace('/404');
+            history.replace('/404');
             return;
         }
         this.pingLoop(params.hash);
@@ -56,7 +56,7 @@ class PendingTxDetail extends React.Component {
             const data = await api.getPendingTxsDetailByPage(params.hash);
             this.setState({ data: data });
         }catch(e){
-            // history.replace('/404');
+            history.replace(`/txs/${params.hash}`);
             return;
         }
    
