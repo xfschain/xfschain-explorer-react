@@ -164,5 +164,7 @@
     "NF_TOKEN_ITEMS_TOKEN_ID": "TOKEN_ID",
     "NF_TOKEN_ITEMS_OWNER": "OWNER",
     "PAGE_TITLE_NF_TOKEN_ITEM": "NFTs",
+    "HOME_NAV_BLOCKS":"Block List",
+    "HOME_NAV_TXS":"Transaction List",
     "_;;":";;"
 }

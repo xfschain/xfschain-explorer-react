@@ -38,6 +38,7 @@ import STDTokenItem from './STDTokenItem';
 import NFTokens from './NFTokens';
 import NFTokenItem from './NFTokenItem';
 // import { lang } from 'moment';
+
 const api = services.api;
 function NavItem({ href, children, ...props }) {
   let location = useLocation();
@@ -206,10 +207,10 @@ class App extends PureComponent {
   }
   getCurrentLocale() {
     let currentLocale = window.sessionStorage.getItem('_lang');
-    currentLocale = currentLocale || intl.determineLocale({
-      urlLocaleKey: 'lang',
-      cookieLocaleKey: 'lang'
-    });
+    // currentLocale = currentLocale || intl.determineLocale({
+    //   urlLocaleKey: 'lang',
+    //   cookieLocaleKey: 'lang'
+    // });
     currentLocale = currentLocale || DEFAULT_LOCALES;
     return _.find(SUPPOER_LOCALES, { value: currentLocale.toLowerCase() });
   }
@@ -225,12 +226,6 @@ class App extends PureComponent {
     window.sessionStorage.setItem('_network', netid);
     window.location.search = `?network=${netid}`;
   }
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   if (this.props.showMNav !== nextProps.showMNav) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
   render() {
     let currentLocale = this.getCurrentLocale();
     let currentNetwork = this.getCurrentNetwork();
@@ -248,7 +243,8 @@ class App extends PureComponent {
             </h1>
             <div className="navbar-nav flex-row order-md-last">
               <div className="nav-item dropdown d-none d-md-flex me-3">
-                <a className="nav-link dropdown-toggle" href="#navbar-third" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">
+                {/* <a className="nav-link dropdown-toggle" href="#navbar-third" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false"> */}
+                <a className="nav-link " >
                   <span className="nav-link-icon d-md-none d-lg-inline-block">{/* Download SVG icon from http://tabler-icons.io/i/star */}
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-wifi" viewBox="0 0 16 16">
                       <path d="M15.384 6.115a.485.485 0 0 0-.047-.736A12.444 12.444 0 0 0 8 3C5.259 3 2.723 3.882.663 5.379a.485.485 0 0 0-.048.736.518.518 0 0 0 .668.05A11.448 11.448 0 0 1 8 4c2.507 0 4.827.802 6.716 2.164.205.148.49.13.668-.049z" />
@@ -256,7 +252,8 @@ class App extends PureComponent {
                     </svg>
                   </span>
                   <span className="nav-link-title">
-                    {intl.get('NAV_NETWORK')}&nbsp;&raquo;&nbsp;{intl.get(`NAV_NETWORK_${currentNetwork.value}`)}
+                    {/* {intl.get('NAV_NETWORK')}&nbsp;&raquo;&nbsp;{intl.get(`NAV_NETWORK_${currentNetwork.value}`)} */}
+                    {intl.get('NAV_NETWORK')}&nbsp;&raquo;&nbsp;{intl.get(`NAV_NETWORK_MAINNET`)}
                   </span>
                 </a>
                 <div className="dropdown-menu">
