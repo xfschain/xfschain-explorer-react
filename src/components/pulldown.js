@@ -2,16 +2,13 @@ import { PureComponent } from 'react';
 import { withRouter } from 'react-router';
 
 class PullDown extends PureComponent {
-    state = {
-        title:''
-    }
     render() {
         return (
             <li className="nav-item dropdown">
                 <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">
                     <span className="nav-link-title">
                         {
-                         this.state.title || this.props.title
+                         this.props.title
                         }
                     </span>
                 </a>
@@ -33,9 +30,6 @@ class PullDown extends PureComponent {
         );
     }
     changeTitle(title,href){
-        this.setState({
-            title
-        })
         this.props.history.replace(href)
     }
 }

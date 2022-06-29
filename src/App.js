@@ -1,8 +1,8 @@
-import logo from './logo.svg';
+import logo from './logo.jpg';
 import _, { flatMap } from 'lodash';
 import axios from 'axios';
 import intl from 'react-intl-universal';
-import {PureComponent} from 'react';
+import { PureComponent } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -55,7 +55,7 @@ function NavItem({ href, children, ...props }) {
   return (
     <li className={classnames}>
       {/* <a className="nav-link" href={href} */}
-      <span className="nav-link"  onClick={e=>history.push(href)}>
+      <span className="nav-link" onClick={e => history.push(href)}>
         <span className="nav-link-title">
           {children}
         </span>
@@ -172,30 +172,6 @@ class App extends PureComponent {
       showMNav: false,
       initDone: false,
       searchq: '',
-      pullList: [
-        {
-          href: '/blocks',
-          title: '区块'
-          // intl.get('NAV_BLOCKS')
-        },
-        {
-          href: '/fork_blocks',
-          title: '分叉快'
-          // intl.get('NAV_FORK_BLOCK')
-        }
-      ],
-      pullList2: [
-        {
-          href: '/txs',
-          title: '交易'
-          // intl.get('NAV_TXS')
-        },
-        {
-          href: '/pendingtxs',
-          title: '未打包交易'
-          // intl.get('NAV_PENDING_TXS')
-        }
-      ]
     };
   }
   componentDidMount() {
@@ -342,8 +318,26 @@ class App extends PureComponent {
                   <NavItem href={'/'}>
                     {intl.get('NAV_HOME')}
                   </NavItem>
-                  <PullDown pullList={this.state.pullList} title="区快选择"/>
-                  <PullDown pullList={this.state.pullList2} title="交易明细"/>
+                  <PullDown pullList={[{
+                    href: '/blocks',
+                    title: intl.get('NAV_BLOCKS')
+                  },
+                  {
+                    href: '/fork_blocks',
+                    title: intl.get('NAV_FORK_BLOCK')
+                  }]} title={intl.get('HOME_NAV_BLOCKS')} />
+                  <PullDown pullList={
+                    [
+                      {
+                        href: '/txs',
+                        title: intl.get('NAV_TXS')
+                      },
+                      {
+                        href: '/pendingtxs',
+                        title: intl.get('NAV_PENDING_TXS')
+                      }
+                    ]
+                  } title={intl.get('HOME_NAV_TXS')} />
                   <NavItem href={'/accounts'}>
                     {intl.get('NAV_ACCOUNTS')}
                   </NavItem>

@@ -8,7 +8,7 @@
     "NAV_HOME": "首页",
     "NAV_BLOCKS": "区块",
     "NAV_FORK_BLOCK": "分叉块",
-    "NAV_TXS": "交易",
+    "NAV_TXS": "所有交易",
     "NAV_PENDING_TXS": "未打包交易",
     "NAV_ACCOUNTS": "账户",
     "NAV_TOKENS": "通证",
@@ -165,5 +165,7 @@
     "PAGE_TITLE_NF_TOKENS": "NFTs",
     "PAGE_TITLE_STD_TOKEN_ITEM": "标准通证",
     "PAGE_TITLE_NF_TOKEN_ITEM": "NFTs",
+    "HOME_NAV_BLOCKS":"区块列表",
+    "HOME_NAV_TXS":"交易列表",
     "_;;":";;"
 }
