@@ -37,7 +37,7 @@ import STDTokens from './STDTokens';
 import STDTokenItem from './STDTokenItem';
 import NFTokens from './NFTokens';
 import NFTokenItem from './NFTokenItem';
-import { lang } from 'moment';
+// import { lang } from 'moment';
 const api = services.api;
 function NavItem({ href, children, ...props }) {
   let location = useLocation();
@@ -55,7 +55,10 @@ function NavItem({ href, children, ...props }) {
   return (
     <li className={classnames}>
       {/* <a className="nav-link" href={href} */}
-      <span className="nav-link" onClick={e => history.push(href)}>
+      <span className="nav-link" onClick={e => {
+        history.push(href);
+        window.sessionStorage.setItem('title', '')
+      }}>
         <span className="nav-link-title">
           {children}
         </span>
@@ -315,7 +318,7 @@ class App extends PureComponent {
             <div className="navbar navbar-light">
               <div className="container-xl">
                 <ul className="navbar-nav">
-                  <NavItem href={'/'}>
+                  <NavItem href={'/'} onClick={e => this.isActive(e)}>
                     {intl.get('NAV_HOME')}
                   </NavItem>
                   <PullDown pullList={[{
@@ -450,6 +453,9 @@ class App extends PureComponent {
         </div>
       </Router>
     );
+  }
+  isActive(e) {
+    console.log('当前的dom', e.target);
   }
 }
 export default App;

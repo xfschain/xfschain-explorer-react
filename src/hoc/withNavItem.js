@@ -1,10 +1,12 @@
 //navItem高阶组件
 import {
     useLocation,
+    useHistory
 } from "react-router-dom";
 import classNames from 'classnames';
 function NavItem({ href, children }) {
     let location = useLocation();
+    let history = useHistory();
     let { pathname } = location;
     let hrefmatch = () => {
         return (href && href !== '/' && pathname.startsWith(href))
@@ -13,19 +15,19 @@ function NavItem({ href, children }) {
     let classnames = classNames(
         {
             [`active`]: hrefmatch(),
-        }, 'nav-item'
+        }, 'nav-item','dropdown'
     )
     return (
         <li className={classnames}>
-            <a className="nav-link" href={href}>
+            <span className="nav-link" >
                 <span className="nav-link-title">
                     {children}
                 </span>
-            </a>
+            </span>
         </li>
     );
 }
 const withNavItem = WarppedComponent => props => (
-     <WarppedComponent {...props} NavItem={NavItem}/>
+    <WarppedComponent {...props} NavItem={NavItem} />
 )
 export default withNavItem;
