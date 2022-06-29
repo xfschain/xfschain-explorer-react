@@ -115,6 +115,7 @@
     "ACCOUNTS_CREATE_TIME": "Created",
     "ACCOUNTS_UPDATE_TIME": "Updated",
     "ACCOUNTS_TXS": "TXS",
+    "ACCOUNTS_NONCE": "Nonce",
     "ACCOUNT_DETAIL_ADDRESS": "Address",
     "ACCOUNT_DETAIL_BALANCE": "Balance",
     "ACCOUNT_DETAIL_NONCE": "Nonce",

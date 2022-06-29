@@ -205,7 +205,7 @@ class PendingTxDetail extends React.Component {
                                     {intl.get('TX_DETAIL_GAS_PRICE')}:
                                 </div>
                                 <div className="col-md-10">
-                                    {defaultIntNumberFormat(gasPriceVal)} NanoXFSc
+                                    {defaultIntNumberFormat(gasPriceVal)} Nano XFSC
                                 </div>
                             </div>
                         </li>

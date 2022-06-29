@@ -11,6 +11,8 @@ import { atto2base,bigToBase } from './util/xfslibutil';
 import { defaultIntNumberFormat, defaultNumberFormatFF9, defaultrNumberFormatFF4, defaultrNumberFormatFF6, numberFormatPercent } from './util/common';
 import classNames from 'classnames';
 import qs from 'qs';
+import { jsonrpc } from './services/api';
+import { flatMap } from 'lodash';
 
 function TableNav(props){
     const {data,} = props;
@@ -62,13 +64,36 @@ function PaginationWapper(props) {
     );
 }
 const api = services.api;
-
+function ImageView({tokenUri}){
+    const [imageData, setImageData] = useState(xfsplaceholder);
+    useEffect(()=>{
+        var fetchImageUrl =  async (path)=>{
+            if(!path) return;
+            const obj = await api.nftToken(path);
+            setImageData(obj?.image??xfsplaceholder);
+        }
+        fetchImageUrl(tokenUri).catch(console.warn);
+    }, []);
+    return (
+        <a href="#" className="d-block" style={{
+            display: 'flex',
+            background: '#f4f4f4',
+            height: '250px',
+        }}>
+            <img className="card-img-top" style={{
+                height: '100%',
+                margin: '0 auto',
+            }}
+            src={imageData} />
+        </a>
+    );
+}
 const ItemsList = (props)=>{
-
     const [data, setData] = useState({
         total: 0,
         records: [],
     });
+    
     const pageSize = 20;
         const { search } = useLocation();
     const match = useRouteMatch();
@@ -76,14 +101,16 @@ const ItemsList = (props)=>{
         const sq = qs.parse(search.replace(/^\?/, ''));
         let pageNum = sq['p'];
         pageNum = parseInt(pageNum || 1);
-    useEffect(()=>{
-         api.getItemsByAddressFromNFToken(params.address,{
-                 params: {
-                     p: pageNum,
-                 }
-          }).then((pagedata)=>{
-             setData(pagedata);
-         });
+       useEffect(()=>{
+        const fetchData = async ()=>{
+            const page = await api.getItemsByAddressFromNFToken(params.address,{
+                    params: {
+                        p: pageNum,
+                    }
+            });
+             setData(page);
+        };
+        fetchData().catch(console.warn);
     },[]);
      let pn = parseInt(data.total / pageSize);
      const m = data.total % pageSize;
@@ -95,23 +122,14 @@ const ItemsList = (props)=>{
                 padding: '0 1.4rem',
             }}>
                 {data?.records.map((item)=>{
+
                     return (
                         <div className="col-3" style={{
                             padding: '1.4rem',
                         }} key={`${item.tokenId}`}>
                             <div className="card card-sm">
-                                <a href="#" className="d-block" style={{
-                                    display: 'flex',
-                                    background: '#f4f4f4',
-                                    height: '250px',
-                                }}>
-                                    <img className="card-img-top" style={{
-                                        height: '100%',
-                                        margin: '0 auto',
-                                    }}
-                                        src={xfsplaceholder} />
-                                </a>
-                                <div className="card-body">
+                                <ImageView tokenUri={item?.tokenUri} />
+                                <div class="card-body">
                                     <div>
                                         <div>
                                             <div>
@@ -216,7 +234,7 @@ const HoldersTable = (props)=>{
                         thStyle: { textAlign: 'right' },
                         tdStyle: { textAlign: 'right',width:'6rem' },
                         render: (item) => {
-                            let percentage = parseFloat(item.percentage);
+                            let percentage = parseFloat(item.proportion);
                             percentage = percentage * 100.0;
                             return (
                                 <span className="fs-6">

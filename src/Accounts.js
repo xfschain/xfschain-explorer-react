@@ -20,7 +20,6 @@ function PaginationWapper(props) {
     }
     return (
         <Pagination current={pageNum}
-
             firstLableText={intl.get('PAGE_TABLE_PAGINATION_FIRST')}
             pageLableText={intl.get('PAGE_TABLE_PAGINATION_PAGE')}
             lastLableText={intl.get('PAGE_TABLE_PAGINATION_LAST')}
@@ -95,7 +94,7 @@ class Accounts extends React.Component {
             });
         } catch (e) {
             console.log(e);
-            history.replace('/404');
+            // history.replace('/404');
         }
     }
     render() {
@@ -117,7 +116,6 @@ class Accounts extends React.Component {
                                     );
                                 }
                             },
-
                             {
                                 name: intl.get('ACCOUNTS_BALANCE'),
                                 thStyle: { textAlign: 'right' },
@@ -135,7 +133,7 @@ class Accounts extends React.Component {
                                 }
                             },
                             {
-                                name: intl.get('ACCOUNTS_TXS'),
+                                name: intl.get('ACCOUNTS_NONCE'),
                                 thStyle: { textAlign: 'right' },
                                 tdStyle: { textAlign: 'right',},
                                 render: (item) => {

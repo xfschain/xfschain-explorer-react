@@ -33,6 +33,9 @@ function defaultIntNumberFormat(num) {
   minimumFractionDigits: 0,
   maximumFractionDigits: 0,
 });
+if (!num){
+  return formater.format(0)
+}
   return formater.format(num);
 }
 
