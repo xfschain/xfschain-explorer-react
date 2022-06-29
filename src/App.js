@@ -342,8 +342,8 @@ class App extends PureComponent {
                   <NavItem href={'/'}>
                     {intl.get('NAV_HOME')}
                   </NavItem>
-                  <PullDown pullList={this.state.pullList} />
-                  <PullDown pullList={this.state.pullList2} />
+                  <PullDown pullList={this.state.pullList} title="区快选择"/>
+                  <PullDown pullList={this.state.pullList2} title="交易明细"/>
                   <NavItem href={'/accounts'}>
                     {intl.get('NAV_ACCOUNTS')}
                   </NavItem>

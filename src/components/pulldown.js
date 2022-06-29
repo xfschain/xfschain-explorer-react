@@ -3,7 +3,7 @@ import { withRouter } from 'react-router';
 
 class PullDown extends PureComponent {
     state = {
-        title:'选择'
+        title:''
     }
     render() {
         return (
@@ -11,7 +11,7 @@ class PullDown extends PureComponent {
                 <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">
                     <span className="nav-link-title">
                         {
-                         this.state.title
+                         this.state.title || this.props.title
                         }
                     </span>
                 </a>
