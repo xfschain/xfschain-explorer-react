@@ -6,7 +6,7 @@ import {
 import { Table, Pagination } from './components';
 import intl from 'react-intl-universal';
 import services from './services';
-import { atto2base, bigToBase } from './util/xfslibutil';
+import {bigToBase } from './util/xfslibutil';
 import { defaultIntNumberFormat, defaultrNumberFormatFF6 } from './util/common';
 const api = services.api;
 function PaginationWapper(props) {
@@ -64,7 +64,7 @@ class STDTokens extends React.Component {
         }
     }
     async componentDidMount() {
-        const { history, location } = this.props;
+        const { location } = this.props;
         const { search } = location;
         const sq = qs.parse(search.replace(/^\?/, ''));
         let pageNum = sq['p'];

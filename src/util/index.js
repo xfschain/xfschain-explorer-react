@@ -29,7 +29,6 @@ function nowtimeformat(last=0, current=(new Date())) {
 function timeformat(current=(new Date())) {
     return moment(current).format('YYYY-MM-DD HH:mm:ss');
 }
-
 export {
     nowtimeformat,
     timeformat

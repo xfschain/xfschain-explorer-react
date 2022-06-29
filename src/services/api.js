@@ -362,3 +362,17 @@ export function jsonrpc(data, options){
         });
     });
 }
+
+export function nftToken(path,options){
+    return new Promise((resolve, reject)=>{
+        apiCli.request({
+            url: path,
+            method: 'get',
+            ...(options||{})
+        }).then(res=>{
+            resolve(res.data);
+        }).catch(err=>{
+            reject(err.data);
+        });
+    });
+}

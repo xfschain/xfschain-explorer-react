@@ -136,7 +136,7 @@ const HoldersTable = (props)=>{
                         thStyle: { textAlign: 'right' },
                         tdStyle: { textAlign: 'right',width:'6rem' },
                         render: (item) => {
-                            let percentage = parseFloat(item.percentage);
+                            let percentage = parseFloat(item.proportion);
                             percentage = percentage * 100.0;
                             return (
                                 <span className="fs-6">
@@ -260,7 +260,7 @@ const TransfersTable = (props)=>{
                                     );
                                 }
                                 return (
-                                <span>Nonce</span>
+                                <span>NULL ADDRESS</span>
                                 );
                             };
                             return (
@@ -436,7 +436,7 @@ class STDTokenItem extends React.Component {
                             {intl.get('TOKENS_TXS')}:
                             </div>
                             <div className="col-md-10">
-                            {defaultIntNumberFormat(this.state?.data.txs)}
+                            {defaultIntNumberFormat(this.state?.data.txNum)}
                             </div>
                         </div>
                     </li>
@@ -446,7 +446,7 @@ class STDTokenItem extends React.Component {
                             {intl.get('TOKENS_HOLDERS')}:
                             </div>
                             <div className="col-md-10">
-                            {defaultIntNumberFormat(this.state?.data.holders)}
+                            {defaultIntNumberFormat(this.state?.data.holderNum)}
                             </div>
                         </div>
                     </li>

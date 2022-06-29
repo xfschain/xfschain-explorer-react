@@ -1,5 +1,5 @@
 import logo from './logo.svg';
-import _ from 'lodash';
+import _, { flatMap } from 'lodash';
 import axios from 'axios';
 import intl from 'react-intl-universal';
 import React from 'react';
@@ -35,6 +35,7 @@ import STDTokens from './STDTokens';
 import STDTokenItem from './STDTokenItem';
 import NFTokens from './NFTokens';
 import NFTokenItem from './NFTokenItem';
+import { lang } from 'moment';
 const api = services.api;
 function NavItem({ href, children, ...props }) {
   let location = useLocation();
