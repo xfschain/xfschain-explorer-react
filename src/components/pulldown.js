@@ -1,6 +1,7 @@
-import { PureComponent } from 'react';
+import { PureComponent,createRef } from 'react';
 import { withRouter } from 'react-router';
 import classNames from 'classnames';
+let divRef = createRef();
 function NavItemActive({ title, children }) {
     let hrefmatch = () => {
         return title === window.sessionStorage.getItem('title');
@@ -11,16 +12,17 @@ function NavItemActive({ title, children }) {
         }, 'nav-item', 'dropdown'
     )
     return (
-        <li className={classnames}>
+        <li className={classnames} ref={divRef}>
             {children}
         </li>
     );
 }
 
 class PullDown extends PureComponent {
+    
     render() {
         return (
-            <NavItemActive  title={this.props.title}>
+            <NavItemActive  title={this.props.title} >
                 <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">
                     <span className="nav-link-title">
                         {
@@ -48,6 +50,7 @@ class PullDown extends PureComponent {
     changeTitle(title, href) {
         window.sessionStorage.setItem('title',this.props.title);
         this.props.history.replace(href)
+        divRef.current.click();
     }
 }
 export default withRouter(PullDown);
